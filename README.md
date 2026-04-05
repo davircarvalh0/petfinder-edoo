@@ -11,4 +11,40 @@ Desenvolvido como projeto acadêmico da disciplina de **Estruturas de Dados / PO
 - Interface com o usuário via interface gráfica
 - Documentação técnica e Diagrama de Classes UML
 
-# Estrutura de pastas
+# 🗂️ Estrutura de Pastas
+
+```
+petfinder-recife/
+├── src/
+│   ├── models/
+│   │   ├── Pessoa.h / Pessoa.cpp
+│   │   ├── Dono.h / Dono.cpp
+│   │   ├── Usuario.h / Usuario.cpp
+│   │   ├── Animal.h / Animal.cpp
+│   │   ├── Cachorro.h / Cachorro.cpp
+│   │   ├── Gato.h / Gato.cpp
+│   │   ├── Ocorrencia.h / Ocorrencia.cpp
+│   │   ├── Avistamento.h / Avistamento.cpp
+│   │   ├── Localizacao.h / Localizacao.cpp
+│   │   └── PontoResgate.h / PontoResgate.cpp
+│   ├── database/
+│   │   ├── Database.h / Database.cpp
+│   │   └── schema.sql
+│   ├── services/
+│   │   ├── CRUDAnimal.h / CRUDAnimal.cpp
+│   │   ├── CRUDDono.h / CRUDDono.cpp
+│   │   ├── CRUDOcorrencia.h / CRUDOcorrencia.cpp
+│   │   └── CRUDAvisamento.h / CRUDAvistamento.cpp
+│   ├── ui/
+│   │   ├── Menu.h / Menu.cpp
+│   │   └── Relatorios.h / Relatorios.cpp
+│   └── main.cpp
+├── docs/
+│   ├── diagrama_classes_uml.png
+│   ├── relatorio_tecnico.pdf
+│   └── documentacao_sprint.md
+├── tests/
+│   └── test_main.cpp
+├── .gitignore
+├── Makefile
+└── README.md
