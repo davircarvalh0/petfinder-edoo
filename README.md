@@ -8,7 +8,7 @@ Desenvolvido como projeto acadêmico da disciplina de **Estruturas de Dados / PO
 
 - Programação Orientada a Objetos (classes, herança, polimorfismo, encapsulamento)
 - CRUD completo conectado a banco de dados
-- Interface com o usuário via terminal (e opcionalmente gráfica)
+- Interface com o usuário via interface gráfica
 - Documentação técnica e Diagrama de Classes UML
 
 # Estrutura de dados
