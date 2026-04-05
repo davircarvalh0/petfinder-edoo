@@ -11,4 +11,4 @@ Desenvolvido como projeto acadêmico da disciplina de **Estruturas de Dados / PO
 - Interface com o usuário via interface gráfica
 - Documentação técnica e Diagrama de Classes UML
 
-# Estrutura de dados
+# Estrutura de pastas
