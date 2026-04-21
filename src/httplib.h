@@ -18,10 +18,6 @@
 #endif
 #endif
 
-/*
- * Configuration
- */
-
 #ifndef CPPHTTPLIB_KEEPALIVE_TIMEOUT_SECOND
 #define CPPHTTPLIB_KEEPALIVE_TIMEOUT_SECOND 5
 #endif
