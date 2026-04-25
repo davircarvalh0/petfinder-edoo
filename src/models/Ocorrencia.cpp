@@ -1,3 +1,4 @@
+//implementa as funçoes de ocorrencia.h e os comentario com o que cada funçao faz foi feito apenas na .h para poupar tempo
 #include <string>
 #include <iostream>
 #include "Ocorrencia.h"

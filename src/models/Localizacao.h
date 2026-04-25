@@ -17,5 +17,5 @@ class Localizacao{
     void setLongitude(double longi);
     void setBairro(string bairro);
     void setReferencia(string referenia);
-    void print(); //exibe as informaçoes no terminal
+    void exibir(); //exibe as informaçoes no terminal
 };

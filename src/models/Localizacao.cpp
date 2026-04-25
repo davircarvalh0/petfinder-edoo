@@ -43,7 +43,7 @@ void Localizacao::setReferencia(string ref){
 }
 
 //print
-void Localizacao::print(){
+void Localizacao::exibir(){
     cout << "Bairro: " << bairro     << endl;
     cout << "Referencia: " << referencia << endl;
     cout << "Latitude: " << latitude   << endl;

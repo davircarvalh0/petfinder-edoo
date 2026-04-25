@@ -1,3 +1,4 @@
+//declaração das classes de ocorrencia
 #include <string>
 #include "Localizacao.h"
 #include "Animal.h" //ainda nao foi criada (remover dps)
@@ -7,14 +8,14 @@ class Ocorrencia{
     int Id; //id da ocorrenncia
     string dataDesaparecimento, status; //data do ocorrido e se ta ja achou ou ainda nn //RAPAZIADA, PFVR SEMPRE USAR COMO PERDIDO/ENCONTRADO PRARA QUEM FOR MEXER NO MEU CODIGO
     Animal* animal; //ainda vai ser criada (vou remover esse comentario dps)
-    Localizacao* localizacao; //proprio nome ja diz
+    Localizacao* localizacao; //ponteiro pra area que o dono acha que o bicho ta
     public:
     Ocorrencia(int id, string data, string stats, Animal* bicho, Localizacao* loc ); //contructor, ele tbm vai servir como settter
-    int getId();
-    string getData();
-    string getStatus();
-    Animal* getAnimal();
-    Localizacao* getLocalizacao();
+    int getId(); //chama o id
+    string getData(); //chama a data
+    string getStatus(); //chama o status de perdido ou encontrado
+    Animal* getAnimal(); //mostra o animal perdido
+    Localizacao* getLocalizacao(); //mostra a localização informada pelo dono do pet
     void exibir(); 
-    void marcarEncontrado();
+    void marcarEncontrado(); //update do status
 };
