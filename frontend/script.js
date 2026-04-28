@@ -17,6 +17,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         if (resultado.sucesso) {
             mensagemEl.style.color = '#27ae60';
             mensagemEl.textContent = 'Login aprovado! Redirecionando...';
+            window.location.href = "/home.html";
         } else {
             mensagemEl.style.color = '#e74c3c';
             mensagemEl.textContent = 'Erro: ' + resultado.erro;
