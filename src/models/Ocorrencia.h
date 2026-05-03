@@ -1,4 +1,6 @@
 //declaração das classes de ocorrencia
+#ifndef OCORRENCIA.H
+#define OCORRENCIA.H
 #include <string>
 #include "Localizacao.h"
 #include "Animal.h" //ainda nao foi criada (remover dps)
@@ -19,3 +21,4 @@ class Ocorrencia{
     void exibir(); 
     void marcarEncontrado(); //update do status
 };
+#endif

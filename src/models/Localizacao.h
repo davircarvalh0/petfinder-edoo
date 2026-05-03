@@ -1,4 +1,6 @@
 // declaração das classes de localização
+#ifndef LOCALIZACAO.H
+#define LOCALIZACAO.H
 #include <string>
 #include <iostream>
 using namespace std;
@@ -19,3 +21,4 @@ class Localizacao{
     void setReferencia(string referenia);
     void exibir(); //exibe as informaçoes no terminal
 };
+#endif 
