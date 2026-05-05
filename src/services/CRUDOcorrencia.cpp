@@ -4,7 +4,7 @@
 #include <vector>
 using namespace std;
 //constructor
-CRUDOcorrencia::CRUDocorrencia(Database& b) : banco(b) {};
+CRUDOcorrencia::CRUDocorrencia(Database& b) : banco(b) {}; //referencia ao banco de dados //o & aponta, não clona
 //Create
 void CRUDOcorrencia::CriarOcorrencia(int animalId, string data, int localizacaoId){
     string L_id = to_string(localizacaoId);
