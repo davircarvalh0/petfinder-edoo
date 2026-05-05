@@ -3,25 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PetFinder - Login</title>
+    <title>PetFinder - Login e Cadastro</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="login-page">
     <div class="login-container">
         <h1>PetFinder</h1>
-        <h2>Login:</h2>
-        <form id="loginForm">
-            <div class="input-group">
-                <label for="usuario">Usuário</label>
-                <input type="text" id="usuario" name="usuario" required>
-            </div>
-            <div class="input-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" required>
-            </div>
-            <button type="submit">Entrar</button>
-            <p id="mensagem"></p>
-        </form>
+        
+        <!-- SEÇÃO DE LOGIN -->
+        <div id="secaoLogin">
+            <h2>Login:</h2>
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="usuario">Usuário</label>
+                    <input type="text" id="usuario" name="usuario" required>
+                </div>
+                <div class="input-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" required>
+                </div>
+                <button type="submit">Entrar</button>
+            </form>
+            <p id="mensagemLogin" class="mensagem"></p>
+            <p class="toggle-text">Não tem uma conta? <a href="#" id="btnIrParaCadastro">Cadastre-se</a></p>
+        </div>
+
+        <!-- SEÇÃO DE CADASTRO -->
+        <div id="secaoCadastro" style="display: none;">
+            <h2>Criar nova conta:</h2>
+            <form id="cadastroForm">
+                <div class="input-group">
+                    <label for="novoUsuario">Nome de Usuário</label>
+                    <input type="text" id="novoUsuario" name="usuario" required>
+                </div>
+                <div class="input-group">
+                    <label for="novaSenha">Senha</label>
+                    <input type="password" id="novaSenha" name="senha" required>
+                </div>
+                <button type="submit" class="btn-cadastro">Cadastrar</button>
+            </form>
+            <p id="mensagemCadastro" class="mensagem"></p>
+            <p class="toggle-text">Já tem uma conta? <a href="#" id="btnIrParaLogin">Faça Login</a></p>
+        </div>
+
     </div>
 
     <script src="script.js"></script>
