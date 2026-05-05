@@ -1,0 +1,7 @@
+petfinder
+petfinder.db
+*.db
+*.sqlite
+*.sqlite3
+*.exe
+.DS_Store

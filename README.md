@@ -48,3 +48,76 @@ petfinder-recife/
 ├── .gitignore
 ├── Makefile
 └── README.md
+```
+
+# Banco de dados SQLite
+
+O projeto usa SQLite, entao o banco fica em um arquivo local chamado `petfinder.db`.
+As tabelas sao criadas pelo arquivo `src/database/schema.sql` quando o programa inicia.
+
+## Como compilar e rodar
+
+```bash
+make
+make run
+```
+
+Se quiser recriar o banco do zero:
+
+```bash
+make db-reset
+```
+
+Para abrir o banco pelo terminal:
+
+```bash
+sqlite3 petfinder.db
+.tables
+.schema animais
+```
+
+## Como conectar no C++
+
+```cpp
+#include "database/Database.h"
+
+Database banco;
+
+if (!banco.abrir("petfinder.db")) {
+    return 1;
+}
+
+banco.criarTabelas("src/database/schema.sql");
+```
+
+## Exemplo para os CRUDs
+
+Use `executarPreparado` para `INSERT`, `UPDATE` e `DELETE`:
+
+```cpp
+banco.executarPreparado(
+    "INSERT INTO animais (dono_id, tipo, nome, peso, idade, cor, raca, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+    {"1", "cachorro", "Rex", "12.5", "3", "caramelo", "vira-lata", "uploads/rex.jpg"}
+);
+```
+
+Use `consultar` para `SELECT`:
+
+```cpp
+banco.consultar(
+    "SELECT id, nome, telefone FROM pessoas WHERE tipo = ?;",
+    {"dono"},
+    [](const Database::Linha& linha) {
+        std::cout << linha.at("id") << " - " << linha.at("nome") << std::endl;
+    }
+);
+```
+
+Principais tabelas:
+
+- `pessoas`: guarda `dono` e `usuario`
+- `animais`: cachorro/gato ligado a um dono, incluindo o campo `foto`
+- `localizacoes`: latitude, longitude, bairro e referencia
+- `ocorrencias`: desaparecimento de um animal
+- `avistamentos`: relato de um usuario sobre uma ocorrencia
+- `pontos_resgate`: locais uteis para resgate
