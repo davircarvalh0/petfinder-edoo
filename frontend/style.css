@@ -128,3 +128,39 @@ body.home-page {
     font-weight: 600; cursor: pointer; padding: 0 10px;
 }
 .add-comment button:hover { color: #166fe5; }
+
+.toggle-text {
+    margin-top: 15px;
+    font-size: 0.95rem;
+    color: #606770;
+}
+.toggle-text a {
+    color: #1877f2;
+    text-decoration: none;
+    font-weight: 600;
+}
+.toggle-text a:hover {
+    text-decoration: underline;
+}
+.btn-cadastro {
+    background-color: #42b72a !important; /* Verde estilo FB para cadastro */
+}
+.btn-cadastro:hover {
+    background-color: #36a420 !important;
+}
+.mensagem {
+    margin-top: 1rem; 
+    font-weight: bold; 
+    min-height: 20px;
+}
+
+/* AJUSTES PARA O HEADER DO FEED */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+#saudacaoUsuario {
+    font-weight: 600;
+    color: #050505;
+}
