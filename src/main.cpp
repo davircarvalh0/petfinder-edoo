@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 using namespace std;
+using namespace httplib;
 // estrutura de um comentario de postagem
 struct Comentario {
     string autor;

@@ -10,9 +10,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Carrega as postagens assim que a página abrir
     carregarPostagens();
+
+    const formPublicacao = document.getElementById('form-publicacao');
+    const mensagemRetorno = document.getElementById('mensagem-retorno');
+
+    if (formPublicacao) {
+        formPublicacao.addEventListener('submit', async (evento) => {
+            evento.preventDefault(); // Impede a página de recarregar
+            
+            const formData = new FormData(formPublicacao);
+            
+            // Você pode adicionar o autor (dono) no FormData para o backend em C++ saber quem postou
+            formData.append('autor', nomeUsuario || 'Anônimo');
+
+            try {
+                // Ajuste a rota '/api/ocorrencias' conforme estiver no seu main.cpp do servidor
+                const resposta = await fetch('/api/ocorrencias', {
+                    method: 'POST',
+                    body: formData // Não envie 'Content-Type', o navegador gera o boundary do multipart automaticamente
+                });
+
+                if (resposta.ok) {
+                    mensagemRetorno.style.color = 'green';
+                    mensagemRetorno.innerText = 'Cachorro registrado com sucesso!';
+                    formPublicacao.reset(); // Limpa os campos
+                    carregarPostagens();    // Recarrega o feed para mostrar a nova ocorrência
+                } else {
+                    const erroInfo = await resposta.text();
+                    mensagemRetorno.style.color = 'red';
+                    mensagemRetorno.innerText = `Erro ao salvar: ${erroInfo}`;
+                }
+            } catch (erro) {
+                console.error('Erro de comunicação com o servidor:', erro);
+                mensagemRetorno.style.color = 'red';
+                mensagemRetorno.innerText = 'Servidor indisponível. Tente novamente.';
+            }
+        });
+    }
 });
 
-// Ação do botão de sair
 const btnSair = document.getElementById('btnSair');
 if (btnSair) {
     btnSair.addEventListener('click', () => {
@@ -20,10 +56,8 @@ if (btnSair) {
     });
 }
 
-// Função para buscar e renderizar as postagens
 async function carregarPostagens() {
     try {
-        // NOVO: { cache: 'no-store' } obriga o navegador a pegar os dados frescos do C++!
         const resposta = await fetch('/api/posts', { cache: 'no-store' });
         const postagens = await resposta.json();
         const container = document.getElementById('listaPostagens');
@@ -35,12 +69,16 @@ async function carregarPostagens() {
             postElement.className = 'post';
             
             let comentariosHTML = '';
-            post.comments.forEach(comentario => {
-                comentariosHTML += `<div class="comment"><strong>${comentario.autor}:</strong> ${comentario.texto}</div>`;
-            });
+            // Valida se comments existe antes de iterar
+            if (post.comments && Array.isArray(post.comments)) {
+                post.comments.forEach(comentario => {
+                    comentariosHTML += `<div class="comment"><strong>${comentario.autor}:</strong> ${comentario.texto}</div>`;
+                });
+            }
 
             postElement.innerHTML = `
                 <div class="post-author">${post.autor}</div>
+                <!-- Se no futuro o backend retornar o caminho da foto, você pode adicionar uma <img> aqui -->
                 <div class="post-content">${post.conteudo}</div>
                 <div class="comments-section">
                     ${comentariosHTML}
@@ -57,43 +95,19 @@ async function carregarPostagens() {
     }
 }
 
-// Ação do botão de Postar
-document.getElementById('btnPostar').addEventListener('click', async () => {
-    let texto = document.getElementById('novoPostTexto').value;
-    if (!texto.trim()) return;
-
-    // NOVO: Limpa aspas e quebras de linha para não quebrar o JSON do C++
-    texto = texto.replace(/"/g, "'").replace(/\n/g, " - ");
-
-    const autor = localStorage.getItem('usuarioAtivo') || 'Anônimo';
-
-    try {
-        await fetch('/api/posts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `conteudo=${encodeURIComponent(texto)}&autor=${encodeURIComponent(autor)}`
-        });
-
-        document.getElementById('novoPostTexto').value = '';
-        carregarPostagens(); 
-    } catch (erro) {
-        console.error("Erro ao publicar:", erro);
-    }
-});
-
-// Ação do botão de Comentar
 async function adicionarComentario(postId) {
     const input = document.getElementById(`input-comentario-${postId}`);
     const texto = input.value;
     if (!texto.trim()) return;
 
+    const textoLimpo = texto.replace(/"/g, "'").replace(/\n/g, " - ");
     const autor = localStorage.getItem('usuarioAtivo') || 'Anônimo';
 
     try {
         await fetch('/api/comments', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `postId=${postId}&texto=${encodeURIComponent(texto)}&autor=${encodeURIComponent(autor)}`
+            body: `postId=${postId}&texto=${encodeURIComponent(textoLimpo)}&autor=${encodeURIComponent(autor)}`
         });
 
         input.value = ''; // Limpa o campo
