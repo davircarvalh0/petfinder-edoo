@@ -6,21 +6,52 @@
     <title>PetFinder - Feed</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="home-page"> <header class="navbar">
-    <h1>PetFinder Feed</h1>
-    <div class="user-menu">
-        <span id="saudacaoUsuario">Olá, Visitante</span>
-        <a href="/" class="logout-btn" id="btnSair">Sair</a>
-    </div>
-</header>
+<body class="home-page"> 
+    <header class="navbar">
+        <h1>PetFinder Feed</h1>
+        <div class="user-menu">
+            <span id="saudacaoUsuario">Olá, Visitante</span>
+            <a href="/" class="logout-btn" id="btnSair">Sair</a>
+        </div>
+    </header>
+
     <main class="feed-container">
         <div class="create-post">
-            <textarea id="novoPostTexto" placeholder="Achou ou perdeu um pet? Compartilhe aqui..." rows="3"></textarea>
-            <button id="btnPostar">Publicar</button>
+            <h2>Registrar Cachorro Perdido</h2>
+            <form id="form-publicacao" enctype="multipart/form-data">
+                
+                <div class="input-group">
+                    <label for="nome">Nome do Cachorro:</label>
+                    <input type="text" id="nome" name="nome" placeholder="Ex: Rex" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="raca">Raça:</label>
+                    <input type="text" id="raca" name="raca" placeholder="Ex: Vira-lata, Poodle..." required>
+                </div>
+
+                <div class="input-group">
+                    <label for="local">Local em que foi perdido (Bairro/Referência):</label>
+                    <input type="text" id="local" name="local" placeholder="Ex: Boa Viagem, perto da pracinha" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="foto">Foto do Cachorro:</label>
+                    <input type="file" id="foto" name="foto" accept="image/png, image/jpeg" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="descricao">Descrição:</label>
+                    <textarea id="descricao" name="descricao" rows="4" placeholder="Detalhes como cor da coleira, cicatrizes, comportamento..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Publicar Ocorrência</button>
+            </form>
+            <div id="mensagem-retorno"></div>
         </div>
 
         <div id="listaPostagens">
-            </div>
+        </div>
     </main>
 
     <script src="home.js"></script>

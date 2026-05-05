@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -I./src
-LDFLAGS = -lsqlite3
+LDFLAGS = -lsqlite3 -lws2_32
 
 TARGET = petfinder
 SOURCES = src/main.cpp src/database/Database.cpp
