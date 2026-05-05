@@ -1,6 +1,6 @@
 // declaração das classes de localização
-#ifndef LOCALIZACAO.H
-#define LOCALIZACAO.H
+#ifndef LOCALIZACAO_H
+#define LOCALIZACAO_H
 #include <string>
 #include <iostream>
 using namespace std;
