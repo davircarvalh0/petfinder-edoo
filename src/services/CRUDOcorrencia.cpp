@@ -4,7 +4,7 @@
 #include <vector>
 using namespace std;
 //constructor
-CRUDOcorrencia::CRUDocorrencia(Database& b) : banco(b) {}; //referencia ao banco de dados //o & aponta, não clona
+CRUDOcorrencia::CRUDOcorrencia(Database& b) : banco(b) {}; //referencia ao banco de dados //o & aponta, não clona
 //Create
 void CRUDOcorrencia::CriarOcorrencia(int animalId, string data, int localizacaoId){
     string L_id = to_string(localizacaoId);
@@ -20,13 +20,21 @@ void CRUDOcorrencia::LerOcorrencia(int id){
     cout << linha.at("data_desaparecimento") << endl;});
 };
 //Read Geral
-void CRUDOcorrencia::LerTodasOcorrencia(){
+void CRUDOcorrencia::LerTodasOcorrencias(){
     banco.consultar("SELECT * FROM ocorrencias", {}, [](const Database::Linha& linha) {
     cout << linha.at("id") << endl; //acessa cada coluna pelo nome
     cout << linha.at("status") << endl;
     cout << linha.at("data_desaparecimento") << endl;});
 };
 //Update
-void CRUDOcorrencia::AtualizarOcorrencia(int id, string novoStatus){};
+void CRUDOcorrencia::AtualizarOcorrencia(int id, string novoStatus){
+    string str_id = to_string(id);
+    banco.executarPreparado("UPDATE ocorrencias SET status = ? WHERE id = ?", {novoStatus, str_id});
+    cout << "Ocorrencia Atualizada com sucesso!" << endl;
+};
 //Delete
-void CRUDOcorrencia::DeletarOcorrencia(int id){};
+void CRUDOcorrencia::DeletarOcorrencia(int id){
+    string str_id = to_string(id);
+    banco.executarPreparado("DELETE FROM ocorrencias WHERE id = ?", {str_id});
+    cout << "Ocorrencia Deletada com sucesso!" << endl;
+};
