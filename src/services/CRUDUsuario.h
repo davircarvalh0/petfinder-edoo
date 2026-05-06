@@ -1,25 +1,25 @@
 #pragma once
-#include "../models/Dono.h"
+#include "../models/Usuario.h"
 #include "../database/Database.h"
 #include <string>
 
-class CRUDDono {
+class CRUDUsuario {
 private:
     Database& db;
 
 public:
-    CRUDDono(Database& database);
+    CRUDUsuario(Database& database);
 
     bool cadastrar(const std::string& nome, const std::string& cpf,
                    const std::string& telefone, const std::string& email,
-                   const std::string& endereco);
+                   const std::string& dataCadastro);
 
     bool buscarPorId(int id);
 
     bool listarTodos();
 
     bool atualizar(int id, const std::string& novoTelefone,
-               const std::string& novoEndereco);
+                   const std::string& novoEmail);
 
     bool deletar(int id);
 };
