@@ -20,6 +20,8 @@ body.login-page {
 }
 
 .login-container {
+    max-height: 90vh;
+    overflow-y: auto;
     background-color: white;
     padding: 2.5rem 2rem;
     border-radius: 8px;
@@ -27,6 +29,17 @@ body.login-page {
     width: 100%;
     max-width: 400px;
     text-align: center;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.checkbox-group input {
+    width: auto;
+    cursor: pointer;
 }
 
 .login-container h1 { color: #1877f2; margin-bottom: 0.5rem; font-size: 2rem; } /* Azul FB */
@@ -227,4 +240,105 @@ body.home-page {
     margin-top: 15px;
     text-align: center;
     font-weight: bold;
+}
+
+.pet-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 25px; /* Separa bem uma ocorrência da outra */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.pet-card-header {
+    background: #0d6efd;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pet-card-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.status-badge {
+    background: #dc3545;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.pet-card-body {
+    padding: 20px;
+}
+
+.pet-badges {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.pet-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.pet-details div {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.pet-details span {
+    color: #6c757d;
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+}
+
+.pet-extra {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.pet-extra p {
+    margin: 8px 0;
+    font-size: 0.95rem;
+}
+
+.pet-card-footer {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.pet-card-footer p {
+    margin: 5px 0;
+    font-size: 0.95rem;
 }

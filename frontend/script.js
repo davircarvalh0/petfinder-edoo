@@ -1,86 +1,104 @@
-// Alternar entre telas de Login e Cadastro
-document.getElementById('btnIrParaCadastro').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('secaoLogin').style.display = 'none';
-    document.getElementById('secaoCadastro').style.display = 'block';
-});
+document.addEventListener('DOMContentLoaded', () => {
+    const formLogin = document.getElementById('form-login');
+    const formCadastro = document.getElementById('form-cadastro');
+    const linkCadastro = document.getElementById('link-cadastro');
+    const linkLogin = document.getElementById('link-login');
 
-document.getElementById('btnIrParaLogin').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('secaoCadastro').style.display = 'none';
-    document.getElementById('secaoLogin').style.display = 'block';
-});
-
-// Lógica de Cadastro
-document.getElementById('cadastroForm').addEventListener('submit', async function(evento) {
-    evento.preventDefault(); 
-
-    const form = evento.target;
-    const formData = new URLSearchParams(new FormData(form));
-    const mensagemEl = document.getElementById('mensagemCadastro');
-
-    try {
-        // Envia os dados para a rota de cadastro no seu backend C++
-        const resposta = await fetch('/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData.toString()
+    // --- TROCA DE TELAS (LOGIN <-> CADASTRO) ---
+    if (linkCadastro) {
+        linkCadastro.addEventListener('click', (e) => {
+            e.preventDefault();
+            formLogin.style.display = 'none';
+            formCadastro.style.display = 'block';
         });
-
-        const resultado = await resposta.json();
-
-        if (resultado.sucesso) {
-            mensagemEl.style.color = '#27ae60';
-            mensagemEl.textContent = 'Cadastro realizado com sucesso! Faça login.';
-            form.reset();
-            // Volta para a tela de login após 2 segundos
-            setTimeout(() => document.getElementById('btnIrParaLogin').click(), 2000);
-        } else {
-            mensagemEl.style.color = '#e74c3c';
-            mensagemEl.textContent = 'Erro: ' + resultado.erro;
-        }
-    } catch (erro) {
-        console.error('Erro na conexão:', erro);
-        mensagemEl.style.color = '#e74c3c';
-        mensagemEl.textContent = 'Erro ao tentar conectar ao servidor.';
     }
-});
 
-// Lógica de Login
-document.getElementById('loginForm').addEventListener('submit', async function(evento) {
-    evento.preventDefault(); 
-
-    const form = evento.target;
-    const formData = new URLSearchParams(new FormData(form));
-    const mensagemEl = document.getElementById('mensagemLogin');
-
-    try {
-        const resposta = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData.toString()
+    if (linkLogin) {
+        linkLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            formCadastro.style.display = 'none';
+            formLogin.style.display = 'block';
         });
+    }
 
-        const resultado = await resposta.json();
-
-        if (resultado.sucesso) {
-            mensagemEl.style.color = '#27ae60';
-            mensagemEl.textContent = 'Login aprovado! Redirecionando...';
+    // --- LÓGICA DE LOGIN ---
+    if (formLogin) {
+        formLogin.addEventListener('submit', async (e) => {
+            e.preventDefault();
             
-            // SALVA O NOME DO USUÁRIO NO NAVEGADOR
-            // Se o seu backend retornar o nome, use resultado.nomeUsuario. 
-            // Caso contrário, usamos o que ele digitou no campo.
-            const nomeUsuario = formData.get('usuario'); 
-            localStorage.setItem('usuarioAtivo', nomeUsuario);
+            // O login pode continuar usando 'usuario' (que pode ser o email ou cpf, dependendo de como você tratar no C++) e 'senha'
+            const usuario = document.getElementById('usuario').value;
+            const senha = document.getElementById('senha').value;
 
-            window.location.href = "/home.html";
-        } else {
-            mensagemEl.style.color = '#e74c3c';
-            mensagemEl.textContent = 'Erro: ' + resultado.erro;
-        }
-    } catch (erro) {
-        console.error('Erro na conexão:', erro);
-        mensagemEl.style.color = '#e74c3c';
-        mensagemEl.textContent = 'Erro ao tentar conectar ao servidor.';
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario: usuario, senha: senha })
+                });
+                const result = await response.json();
+
+                if (result.sucesso) {
+                    // Redireciona para o Feed
+                    localStorage.setItem("usuarioLogadoId", result.id);
+                    window.location.href = 'home.html';
+                } else {
+                    alert('Erro: ' + (result.erro || 'Usuário ou senha incorretos.'));
+                }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                // Fallback de segurança para você testar a interface caso o back-end esteja desligado
+                if (usuario === 'admin' && senha === 'admin') {
+                    window.location.href = 'home.html';
+                } else {
+                    alert('Erro de conexão com o servidor C++.');
+                }
+            }
+        });
+    }
+
+    // --- LÓGICA DE CADASTRO ---
+    if (formCadastro) {
+        formCadastro.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // usuario e senha para entrar no sistema
+            const usuario = document.getElementById('novo-usuario').value;
+            const senha = document.getElementById('nova-senha').value;
+            // Capturando os novos campos alinhados à classe Pessoa no C++
+            const nome = document.getElementById('nome').value;
+            const cpf = document.getElementById('cpf').value;
+            const telefone = document.getElementById('telefone').value;
+            const email = document.getElementById('email').value;
+
+            const dadosCadastro = {
+            usuario: usuario,
+            senha: senha,
+            nome: nome,
+            cpf: cpf,
+            telefone: telefone,
+            email: email
+            };
+
+            try {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosCadastro) // Enviando tudo junto!
+            });
+            const result = await response.json();
+
+            if (result.sucesso) {
+                alert('Cadastro realizado com sucesso! Faça o login.');
+                formCadastro.reset();
+                linkLogin.click(); // Volta automaticamente para a tela de login
+            } else {
+                alert('Erro no cadastro: ' + (result.erro || 'Tente novamente.'));
+            }
+            } catch (error) {
+            console.error('Erro no cadastro:', error);
+            alert('Erro de conexão com o servidor C++.');
+            }
+            });
     }
 });

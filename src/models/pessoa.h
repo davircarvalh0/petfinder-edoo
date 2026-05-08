@@ -3,7 +3,7 @@
 
 class Pessoa {
 protected:     //protected faz com q outras subclasses acessem tambem
-                // private (oq estava antes) apenas calsse pessoa acessava
+                // private (oq estava antes) apenas csse pessoa acessava
     std::string nome;
     std::string cpf;
     std::string telefone;

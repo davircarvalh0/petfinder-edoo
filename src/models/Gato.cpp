@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 //construtor
-Gato::Gato(const string& nome, const string& cor, float peso, int idade,const string& raca, const string& pelagem, bool ehCastrado): Animal(nome, cor, peso, idade), raca(raca),pelagem(pelagem),ehCastrado(ehCastrado){}
+Gato::Gato(const string& nome, const string& cor, float peso, int idade,const string& raca, const string& pelagem, bool ehCastrado): Animal(nome, cor, peso, idade, ""), raca(raca),pelagem(pelagem),ehCastrado(ehCastrado){}
 //getters
 string Gato::getRaca()       const { return raca;       }
 string Gato::getPelagem()    const { return pelagem;    }

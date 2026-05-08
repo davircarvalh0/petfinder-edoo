@@ -2,7 +2,7 @@
 #include <iostream>
 //implementacao dos metodos da classe Cachorro
 // chama o construtor da classe mae e obrigatorio para inicializar os atributos herdados de Animal
-Cachorro::Cachorro(const std::string& nome, const std::string& cor, float peso, int idade, const std::string& raca,const std::string& porte,bool usaColeira): Animal(nome, cor, peso, idade), raca(raca), porte(porte), usaColeira(usaColeira) {}
+Cachorro::Cachorro(const std::string& nome, const std::string& cor, float peso, int idade, const std::string& raca,const std::string& porte,bool usaColeira): Animal(nome, cor, peso, idade, ""), raca(raca), porte(porte), usaColeira(usaColeira) {}
 //getters
 std::string Cachorro::getRaca() const { return raca; }
 std::string Cachorro::getPorte() const { return porte; }
