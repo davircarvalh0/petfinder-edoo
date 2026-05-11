@@ -7,13 +7,13 @@ using namespace std;
 
 class CRUDOcorrencia {
 private:
-    Database& banco; //referencia ao banco de dados // o & aponta, nao clona
+    Database* db; 
 public:
-    CRUDOcorrencia(Database& banco); //constructor
-    bool CriarOcorrencia(int animalId, string data, int localizacaoId); //C
+    CRUDOcorrencia(Database* banco); //constructor
+    bool CriarOcorrencia(Ocorrencia* ocorrencia, int animalId, int localizacaoId); //C
     bool LerOcorrencia(int id); //R -> read so de uma em especifico
     bool LerTodasOcorrencias(); //R -> read de todas as ocorrencias
-    bool AtualizarOcorrencia(int id, string novoStatus); //U
+    bool AtualizarOcorrencia(int id, const string& novoStatus); //U
     bool DeletarOcorrencia(int id); //D
 };
 #endif

@@ -1,23 +1,26 @@
 #pragma once
 #include <string>
+using namespace std;
 
 class Pessoa {
 protected:     //protected faz com q outras subclasses acessem tambem
                 // private (oq estava antes) apenas csse pessoa acessava
-    std::string nome;
-    std::string cpf;
-    std::string telefone;
-    std::string email;
+    string nome;
+    string cpf;
+    string telefone;
+    string email;
 
 public:
-    Pessoa(std::string n, std::string c, std::string t, std::string e);
+    Pessoa(string n, string c, string t, string e) 
+        : nome(n), cpf(c), telefone(t), email(e) {}
+
+    string getNome() const;
+    string getCpf() const;
+    string getTelefone() const;
+    string getEmail() const;
     
     virtual ~Pessoa() {}
 
-    std::string getNome();
-    std::string getCpf();
-    std::string getTelefone();
-    std::string getEmail();
     
     
     virtual void exibirInfo() = 0; 

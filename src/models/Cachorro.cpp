@@ -1,12 +1,30 @@
 #include "Cachorro.h"
 #include <iostream>
+using namespace std;
 //implementacao dos metodos da classe Cachorro
 // chama o construtor da classe mae e obrigatorio para inicializar os atributos herdados de Animal
-Cachorro::Cachorro(const std::string& nome, const std::string& cor, float peso, int idade, const std::string& raca,const std::string& porte,bool usaColeira): Animal(nome, cor, peso, idade, ""), raca(raca), porte(porte), usaColeira(usaColeira) {}
+Cachorro::Cachorro(const std::string& n, const std::string& c, float p, int i, 
+                   const std::string& rc, const std::string& pt, const std::string& pel, 
+                   bool col, bool cast, const std::string& f) 
+    : Animal() // inicializa a base
+{
+    nome = n;
+    cor = c;
+    peso = p;
+    idade = i;
+    raca = rc;
+    porte = pt;
+    pelagem = pel;
+    usaColeira = col;
+    ehCastrado = cast;
+    foto = f;
+}
 //getters
-std::string Cachorro::getRaca() const { return raca; }
-std::string Cachorro::getPorte() const { return porte; }
+string Cachorro::getRaca() const { return raca; }
+string Cachorro::getPorte() const { return porte; }
 bool Cachorro::getUsaColeira() const { return usaColeira; }
+string Cachorro::getPelagem() const { return pelagem; }
+bool Cachorro::getEhCastrado() const { return ehCastrado; }
 //setters
 void Cachorro::setRaca(const std::string& r) { raca = r; }
 void Cachorro::setPorte(const std::string& p) { porte = p; }

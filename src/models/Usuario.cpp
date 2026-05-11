@@ -1,10 +1,9 @@
 #include "Usuario.h"
 #include <iostream>
+using namespace std;
 
-Usuario::Usuario(std::string n, std::string c, std::string t, std::string e, std::string data)
-    : Pessoa(n, c, t, e) {
-    dataCadastro = data;
-}
+Usuario::Usuario(string n, string c, string t, string e, string data)
+    : Pessoa(n, c, t, e), dataCadastro(data) {}
 
 void Usuario::reportarAvistamento(Avistamento* av) {
     std::cout << "Avistamento registrado!" << std::endl;

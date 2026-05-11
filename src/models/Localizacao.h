@@ -11,14 +11,14 @@ class Localizacao{
     public:
     Localizacao(); // contrutor
     Localizacao(double lat, double longi, string bairro, string referencia);
-    double getLatitude(); // os get lem os valores fora da classe
-    double getLongitude();
-    string getBairro();
-    string getReferencia();
+    double getLatitude() const; // os get lem os valores fora da classe
+    double getLongitude() const;
+    string getBairro() const;
+    string getReferencia() const;
     void setLatitude(double lat); // os set permite alterar os valores fora da classe
     void setLongitude(double longi);
     void setBairro(string bairro);
     void setReferencia(string referenia);
-    void exibir(); //exibe as informaçoes no terminal
+    void exibir() const; //exibe as informaçoes no terminal
 };
 #endif 

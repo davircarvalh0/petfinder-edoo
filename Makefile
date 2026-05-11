@@ -3,8 +3,7 @@ CXXFLAGS = -std=c++17 -Wall -Wextra -I./src
 LDFLAGS = -lsqlite3 -lws2_32
 
 TARGET = petfinder
-SOURCES = src/main.cpp src/database/Database.cpp
-
+SOURCES = src/main.cpp src/database/Database.cpp $(wildcard src/models/*.cpp) $(wildcard src/services/*.cpp)
 .PHONY: all run clean db-reset db-schema
 
 all: $(TARGET)

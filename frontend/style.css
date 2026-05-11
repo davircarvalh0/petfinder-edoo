@@ -342,3 +342,95 @@ body.home-page {
     margin: 5px 0;
     font-size: 0.95rem;
 }
+
+.comentarios-section {
+    border-top: 1px solid #eee;
+    padding: 20px;
+    background-color: #fcfcfc;
+    border-radius: 0 0 12px 12px; /* Acompanha a borda arredondada do card principal */
+}
+
+.comentarios-titulo {
+    font-size: 1.05rem;
+    color: #212529;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
+
+.lista-comentarios {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Conserta o alinhamento do texto vazio ("Seja o primeiro...") */
+.lista-comentarios p {
+    margin: 0;
+    text-align: left !important;
+    padding: 5px 0 10px 0;
+}
+
+.comentario-item {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.comentario-texto {
+    margin: 0 0 5px 0;
+    color: #495057;
+    line-height: 1.4;
+}
+
+.comentario-data {
+    font-size: 0.8rem;
+    color: #adb5bd;
+}
+
+/* O segredo para alinhar o input e o botão lado a lado */
+.novo-comentario {
+    display: flex;
+    gap: 10px;
+    align-items: stretch; /* Faz os dois terem a mesma altura */
+    width: 100%;
+}
+
+.novo-comentario input {
+    flex: 1; /* Pega todo o espaço que sobrar */
+    min-width: 0; /* Previne que o input vaze do card em telas pequenas */
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.novo-comentario input:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+}
+
+.novo-comentario button {
+    width: auto !important; /* Quebra a regra global que deixava gigante */
+    flex-shrink: 0; /* Impede o botão de ser esmagado pelo input */
+    background-color: #0d6efd; 
+    color: white;
+    border: none;
+    padding: 0 20px;
+    margin: 0 !important;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+}
+
+.novo-comentario button:hover {
+    background-color: #0b5ed7;
+}

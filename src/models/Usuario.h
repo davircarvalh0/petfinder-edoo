@@ -1,16 +1,17 @@
 #pragma once
 #include "Pessoa.h"
 #include <string>
+using namespace std;
 
-class Avistamento;
+class Avistamento; 
 
 class Usuario : public Pessoa {
 
 private:
-    std::string dataCadastro;
+    string dataCadastro;
 
 public:
-    Usuario(std::string n, std::string c, std::string t, std::string e, std::string data);
+    Usuario(string n, string c, string t, string e, string data);
 
     ~Usuario() {}
 

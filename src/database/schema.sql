@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS ocorrencias (
     animal_id INTEGER NOT NULL,
     data_desaparecimento TEXT NOT NULL,
     ultima_localizacao_id INTEGER,
-    status TEXT NOT NULL DEFAULT 'perdido' CHECK (status IN ('perdido', 'encontrado')),
+    status TEXT NOT NULL DEFAULT 'PERDIDO' CHECK (status IN ('PERDIDO', 'ENCONTRADO')),
     criado_em TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
     atualizado_em TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
     FOREIGN KEY (animal_id) REFERENCES animais(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -61,24 +61,14 @@ CREATE TABLE IF NOT EXISTS avistamentos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     usuario_id INTEGER NOT NULL,
     ocorrencia_id INTEGER NOT NULL,
-    localizacao_id INTEGER NOT NULL,
+    localizacao_id INTEGER,    
     data_avistamento TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
     descricao TEXT,
     criado_em TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    
     FOREIGN KEY (usuario_id) REFERENCES pessoas(id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (ocorrencia_id) REFERENCES ocorrencias(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (localizacao_id) REFERENCES localizacoes(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS pontos_resgate (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT NOT NULL,
-    telefone TEXT,
-    localizacao_id INTEGER NOT NULL,
-    tipo TEXT,
-    criado_em TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
-    atualizado_em TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
-    FOREIGN KEY (localizacao_id) REFERENCES localizacoes(id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (localizacao_id) REFERENCES localizacoes(id) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_pessoas_tipo ON pessoas(tipo);

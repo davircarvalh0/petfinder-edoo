@@ -3,15 +3,33 @@
 #include <iostream>
 using namespace std;
 //construtor
-Gato::Gato(const string& nome, const string& cor, float peso, int idade,const string& raca, const string& pelagem, bool ehCastrado): Animal(nome, cor, peso, idade, ""), raca(raca),pelagem(pelagem),ehCastrado(ehCastrado){}
+Gato::Gato(const std::string& n, const std::string& c, float p, int i,
+           const std::string& rc, const std::string& pel, bool col, bool cast, 
+           const std::string& f) 
+    : Animal() // chama o construtor padrão da base
+{
+    // atribui os valores às variáveis da classe base 
+    nome = n;
+    cor = c;
+    peso = p;
+    idade = i;
+    foto = f;
+    // atribui os valores às variáveis da subclasse
+    raca = rc;
+    pelagem = pel;
+    usaColeira = col;
+    ehCastrado = cast;
+}
 //getters
 string Gato::getRaca()       const { return raca;       }
 string Gato::getPelagem()    const { return pelagem;    }
 bool   Gato::getEhCastrado() const { return ehCastrado; }
+bool Gato::getUsaColeira() const { return usaColeira; }
 //setters
 void Gato::setRaca(const string& r)    { raca       = r; }
 void Gato::setPelagem(const string& p) { pelagem    = p; }
 void Gato::setEhCastrado(bool c)       { ehCastrado = c; }
+void Gato::setUsaColeira(bool u) { usaColeira = u; }
 //retorna uma descricao textual rapida do gato
 string Gato::identificar() const {
     string desc = "Gato " + raca + ", pelagem " + pelagem + " e " + getCor();

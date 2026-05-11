@@ -11,14 +11,14 @@ Avistamento::Avistamento(int id, string data, string descricao, Usuario* usuario
     this->ocorrencia = ocorrencia;
     this->localizacao = loc;
 }
-int Avistamento::getId() { return id; } //to tentando deixar em uma linha diferente de como deixei em Ocorrencia e Localização
-string Avistamento::getData() { return data; }
-string Avistamento::getDescricao() { return descricao; }
-Usuario* Avistamento::getUsuario() { return usuario; }
-Ocorrencia* Avistamento::getOcorrencia() { return ocorrencia; }
-Localizacao* Avistamento::getLocalizacao() { return localizacao; }
+int Avistamento::getId() const { return id; } //to tentando deixar em uma linha diferente de como deixei em Ocorrencia e Localização
+string Avistamento::getData() const { return data; }
+string Avistamento::getDescricao() const { return descricao; }
+Usuario* Avistamento::getUsuario() const { return usuario; }
+Ocorrencia* Avistamento::getOcorrencia() const { return ocorrencia; }
+Localizacao* Avistamento::getLocalizacao() const { return localizacao; }
 
-void Avistamento::exibir() {
+void Avistamento::exibir() const {
     cout << "Avistamento ID : " << id << endl;
     cout << "Data           : " << data << endl;
     cout << "Descricao      : " << descricao << endl;
