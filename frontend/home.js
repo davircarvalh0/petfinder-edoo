@@ -1,42 +1,43 @@
 let fotoBase64 = "";
 
-// Aguarda a página carregar completamente
+// aguarda a página carregar completamente
 document.addEventListener("DOMContentLoaded", () => {
     carregarAnimais();
 
     const fotoInput = document.getElementById("fotoAnimal");
-            if (fotoInput) {
-                fotoInput.addEventListener("change", function(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        // limite de 2MB
-                        if (file.size > 2 * 1024 * 1024) {
-                            alert("A imagem é muito grande. Escolha uma foto com menos de 2MB.");
-                            this.value = ""; 
-                            return;
-                        }
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            fotoBase64 = e.target.result;
-                            const preview = document.getElementById("previewFoto");
-                            preview.src = fotoBase64;
-                            preview.style.display = "block";
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
+    if (fotoInput) {
+        fotoInput.addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // limite de 2MB
+                if (file.size > 2 * 1024 * 1024) {
+                    alert("A imagem é muito grande. Escolha uma foto com menos de 2MB.");
+                    this.value = ""; 
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    fotoBase64 = e.target.result;
+                    const preview = document.getElementById("previewFoto");
+                    preview.src = fotoBase64;
+                    preview.style.display = "block";
+                };
+                reader.readAsDataURL(file);
             }
+        });
+    }
+
     // lógica para publicar nova ocorrência
     const formOcorrencia = document.getElementById("form-ocorrencia");
 
     if (formOcorrencia) {
         formOcorrencia.addEventListener("submit", async (e) => {
             e.preventDefault(); // impede a página de recarregar
-            const donoId = localStorage.getItem("usuarioLogadoId"); //verifica se o usuário fez login pegando o ID que o C++ enviou
+            const donoId = localStorage.getItem("usuarioLogadoId"); 
             
             if (!donoId) {
                 alert("Você precisa fazer login primeiro para publicar!");
-                window.location.href = 'index.html'; // manda de volta pra tela de login
+                window.location.href = 'index.html'; 
                 return;
             }
 
@@ -68,19 +69,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 pelagem: document.getElementById("pelagem").value || "Não informada",
                 peso: document.getElementById("peso").value || "0",
                 idade: document.getElementById("idade").value || "0",
-                // se tiver marcado é 1, caso contrário, 0
                 usa_coleira: document.getElementById("usa_coleira").checked ? "1" : "0",
                 eh_castrado: document.getElementById("eh_castrado").checked ? "1" : "0",
                 localizacao: document.getElementById("localizacao").value,
                 descricao: document.getElementById("descricao").value,
-                foto: fotoParaEnviar // agora pega a foto
+                foto: fotoParaEnviar 
             };
 
-            // MODO DETETIVE
             console.log("DADOS QUE SERÃO ENVIADOS:", dadosPet);
             if (!fotoParaEnviar) {
                 alert("Atenção: A foto se perdeu ou não foi selecionada! Tente selecionar novamente.");
-                return; // Bloqueia o envio
+                return; // bloqueia o envio
             }
 
             try {
@@ -115,7 +114,7 @@ async function carregarAnimais() {
         const lista = document.getElementById('lista-animais');
         if (!lista) return;
 
-        lista.innerHTML = ''; // Limpa a lista antes de carregar
+        lista.innerHTML = ''; // limpa a lista antes de carregar
 
         animais.forEach(animal => {
             const card = document.createElement('div');
@@ -189,7 +188,6 @@ window.carregarAvistamentos = async function(animalId) {
     if (!container) return;
 
     try {
-        // Vai buscar apenas os comentários que tenham o ID desta ocorrência
         const response = await fetch(`/api/avistamentos?animal_id=${animalId}`);
         if (!response.ok) {
             container.innerHTML = `<p style="color: #888; font-size: 0.85em; text-align: center;">Seja o primeiro a reportar uma pista.</p>`;
@@ -203,9 +201,8 @@ window.carregarAvistamentos = async function(animalId) {
             return;
         }
 
-        container.innerHTML = ''; // Limpa para renderizar
+        container.innerHTML = ''; 
         avistamentos.forEach(av => {
-            // Se você depois ajustar o backend para retornar o nome do usuário, pode trocar o "Anônimo"
             container.innerHTML += `
                 <div class="comentario-item">
                     <p class="comentario-texto"><strong>Relato:</strong> ${av.descricao}</p>
@@ -234,7 +231,6 @@ window.enviarAvistamento = async function(animalId) {
         return;
     }
 
-    // Pega a data atual no formato brasileiro (DD/MM/YYYY)
     const dataAtual = new Date().toLocaleDateString('pt-BR');
 
     const payload = {

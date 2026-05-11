@@ -55,6 +55,39 @@ string extrairValorJson(const string& json, const string& chave) {
     }
     
     return "";
+    string busca = "\"" + chave + "\"";
+    size_t posChave = json.find(busca);
+    if (posChave == string::npos) return "";
+    size_t posDoisPontos = json.find(":", posChave); // encontra os dois pontos após a chave
+    if (posDoisPontos == string::npos) return "";
+
+    size_t posAtual = posDoisPontos + 1; // pula os espaços em branco após os dois pontos
+    while (posAtual < json.length() && isspace(json[posAtual])) {
+        posAtual++;
+    }
+    if (posAtual >= json.length()) return "";
+    // verifica se o valor é uma string 
+    if (json[posAtual] == '"') {
+        size_t inicio = posAtual + 1; // pula a aspa de abertura
+        size_t fim = json.find('"', inicio); // procura a aspa de fechamento
+        
+        if (fim != string::npos) {
+            return json.substr(inicio, fim - inicio); // retorna tudo
+        }
+    } else {
+        // se for um número ou bool
+        size_t inicio = posAtual;
+        size_t fim = json.find_first_of(",}", inicio); // para na vírgula ou fim do json
+        
+        if (fim != string::npos) {
+            string valor = json.substr(inicio, fim - inicio);
+            // remove espaços extras no final
+            while (!valor.empty() && isspace(valor.back())) valor.pop_back();
+            return valor;
+        }
+    }
+    
+    return "";
 }
 // estrutura de um comentario de postagem
 struct Comentario {
