@@ -5,3 +5,4 @@ petfinder.db
 *.sqlite3
 *.exe
 .DS_Store
+.vscode

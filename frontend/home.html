@@ -17,43 +17,97 @@
 
     <main class="feed-container">
         <div class="create-post">
-            <h2>Registrar Cachorro Perdido</h2>
-            <form id="form-publicacao" enctype="multipart/form-data">
-                
-                <div class="input-group">
-                    <label for="nome">Nome do Cachorro:</label>
-                    <input type="text" id="nome" name="nome" placeholder="Ex: Rex" required>
+            <h2>Registrar Pet Perdido</h2>
+            
+            <!-- Formulário com IDs prontos para o JavaScript capturar -->
+            <form id="form-ocorrencia">
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label for="nome">Nome do Animal:</label>
+                        <input type="text" id="nome" placeholder="Ex: Rex (ou Desconhecido)">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label for="tipo">Tipo:</label>
+                        <select id="tipo" required style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+                            <option value="cachorro">Cachorro</option>
+                            <option value="gato">Gato</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label for="raca">Raça:</label>
+                        <input type="text" id="raca" placeholder="Poodle">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label for="cor">Cor:</label>
+                        <input type="text" id="cor" placeholder="Preto e Branco">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label for="porte">Porte:</label>
+                        <input type="text" id="porte" placeholder="Pequeno, Médio, Grande">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label for="pelagem">Pelagem:</label>
+                        <input type="text" id="pelagem" placeholder="Curta, Longa...">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label for="peso">Peso Aproximado (kg):</label>
+                        <input type="number" id="peso" step="0.1" placeholder="Ex: 5.5">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label for="idade">Idade Aproximada (Anos):</label>
+                        <input type="number" id="idade" placeholder="Ex: 3">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="usa_coleira">
+                        <label for="usa_coleira">Usa coleira?</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="eh_castrado">
+                        <label for="eh_castrado">É castrado?</label>
+                    </div>
                 </div>
 
                 <div class="input-group">
-                    <label for="raca">Raça:</label>
-                    <input type="text" id="raca" name="raca" placeholder="Ex: Vira-lata, Poodle..." required>
+                    <label for="fotoAnimal">Foto do pet:</label>
+                    <input type="file" id="fotoAnimal" accept="image/png, image/jpeg, image/webp">
+                    <img id="previewFoto" style="display:none; max-width: 100%; height: auto; max-height: 250px; margin-top: 10px; border-radius: 8px; object-fit: cover;" alt="Preview do pet">
                 </div>
 
                 <div class="input-group">
-                    <label for="local">Local em que foi perdido (Bairro/Referência):</label>
-                    <input type="text" id="local" name="local" placeholder="Ex: Boa Viagem, perto da pracinha" required>
+                    <label for="localizacao">Local em que foi perdido (Bairro/Referência):</label>
+                    <input type="text" id="localizacao" placeholder="Ex: Estância" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="foto">Foto do Cachorro:</label>
-                    <input type="file" id="foto" name="foto" accept="image/png, image/jpeg" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="descricao">Descrição:</label>
-                    <textarea id="descricao" name="descricao" rows="4" placeholder="Detalhes como cor da coleira, cicatrizes, comportamento..." required></textarea>
+                    <label for="descricao">Descrição Adicional:</label>
+                    <textarea id="descricao" placeholder="Detalhes de como ocorreu..."></textarea>
                 </div>
 
                 <button type="submit" class="btn-submit">Publicar Ocorrência</button>
             </form>
-            <div id="mensagem-retorno"></div>
-        </div>
 
+        <!-- Container onde o GET vai injetar os animais do banco -->
         <div id="listaPostagens">
+            <h2>Feed de Ocorrências</h2>
+            <div id="lista-animais" style="display: flex; flex-direction: column; gap: 15px;">
+                <!-- Os cards aparecerão aqui -->
+            </div>
         </div>
     </main>
 
-    <script src="home.js"></script>
+    <!-- Usando o seu home.js como módulo -->
+    <script type="module" src="home.js"></script>
 </body>
 </html>
