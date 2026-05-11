@@ -21,43 +21,12 @@ using namespace std;
 using namespace httplib;
 
 // código mais complexo da main, função que retira dados do .js e diferencia foto de str normal
+// código mais complexo da main, função que retira dados do .js e diferencia foto de str normal
 string extrairValorJson(const string& json, const string& chave) {
     string busca = "\"" + chave + "\"";
     size_t posChave = json.find(busca);
     if (posChave == string::npos) return "";
-    size_t posDoisPontos = json.find(":", posChave); // encontra os dois pontos após a chave
-    if (posDoisPontos == string::npos) return "";
-
-    size_t posAtual = posDoisPontos + 1; // pula os espaços em branco após os dois pontos
-    while (posAtual < json.length() && isspace(json[posAtual])) {
-        posAtual++;
-    }
-    if (posAtual >= json.length()) return "";
-    // verifica se o valor é uma string 
-    if (json[posAtual] == '"') {
-        size_t inicio = posAtual + 1; // pula a aspa de abertura
-        size_t fim = json.find('"', inicio); // procura a aspa de fechamento
-        
-        if (fim != string::npos) {
-            return json.substr(inicio, fim - inicio); // retorna tudo
-        }
-    } else {
-        // se for um número ou bool
-        size_t inicio = posAtual;
-        size_t fim = json.find_first_of(",}", inicio); // para na vírgula ou fim do json
-        
-        if (fim != string::npos) {
-            string valor = json.substr(inicio, fim - inicio);
-            // remove espaços extras no final
-            while (!valor.empty() && isspace(valor.back())) valor.pop_back();
-            return valor;
-        }
-    }
     
-    return "";
-    string busca = "\"" + chave + "\"";
-    size_t posChave = json.find(busca);
-    if (posChave == string::npos) return "";
     size_t posDoisPontos = json.find(":", posChave); // encontra os dois pontos após a chave
     if (posDoisPontos == string::npos) return "";
 
@@ -66,6 +35,7 @@ string extrairValorJson(const string& json, const string& chave) {
         posAtual++;
     }
     if (posAtual >= json.length()) return "";
+    
     // verifica se o valor é uma string 
     if (json[posAtual] == '"') {
         size_t inicio = posAtual + 1; // pula a aspa de abertura
@@ -89,46 +59,7 @@ string extrairValorJson(const string& json, const string& chave) {
     
     return "";
 }
-// estrutura de um comentario de postagem
-struct Comentario {
-    string autor;
-    string texto;
-};
-// estrutura de uma postagem
-struct Postagem {
-    int id;
-    string autor;
-    string conteudo;
-    vector<Comentario> comentarios;
-};
-// lista de postagens em memoria
-vector<Postagem> banco_de_postagens = {
-    {1, "Admin", "Cachorro perdido hoje? Ele estava com uma coleira azul.", {}}
-};
-int proximo_id_post = 2; // contador de id das postagens
-// dicionario de usuarios em memoria
-map<string, string> usuarios_db = {
-    {"admin", "1234"} // usuario padrao para testes
-};
-// gera um json com todas as postagens e seus comentarios
-string gerarJsonDasPostagens() {
-    string json = "[";
-    for(size_t i = 0; i < banco_de_postagens.size(); i++) {
-        json += "{\"id\":" + to_string(banco_de_postagens[i].id) + ",";
-        json += "\"autor\":\"" + banco_de_postagens[i].autor + "\",";
-        json += "\"conteudo\":\"" + banco_de_postagens[i].conteudo + "\",";
-        json += "\"comments\":[";
-        for(size_t j = 0; j < banco_de_postagens[i].comentarios.size(); j++) {
-            json += "{\"autor\":\"" + banco_de_postagens[i].comentarios[j].autor + "\",";
-            json += "\"texto\":\"" + banco_de_postagens[i].comentarios[j].texto + "\"}";
-            if(j < banco_de_postagens[i].comentarios.size() - 1) json += ",";
-        }
-        json += "]}";
-        if(i < banco_de_postagens.size() - 1) json += ",";
-    }
-    json += "]";
-    return json;
-}
+
 //main
 int main() {
     Database db;
@@ -191,12 +122,6 @@ int main() {
             res.set_content(R"({"sucesso": false, "erro": "E-mail ou senha incorretos."})", "application/json");
             cout << "Falha de login para o usuário: " << usuario << endl;
         }
-    });
-
-    // rota para listar postagens
-    servidor.Get("/api/posts", [](const Request& /*req*/, Response& res) {
-        res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content(gerarJsonDasPostagens(), "application/json");
     });
 
     // rota para cadastrar animais no banco de dados
@@ -315,22 +240,7 @@ int main() {
             res.set_content(R"({"sucesso": false})", "application/json");
         }
     });
-
-    // rota para criar postagem
-    servidor.Post("/api/posts", [](const Request& req, Response& res) {
-        string conteudo = extrairValorJson(req.body, "conteudo");
-        string autor = extrairValorJson(req.body, "autor");
-        if (autor.empty()) autor = "Anonimo";
-
-        Postagem novoPost;
-        novoPost.id = proximo_id_post++;
-        novoPost.autor = autor;
-        novoPost.conteudo = conteudo;
-        banco_de_postagens.push_back(novoPost); 
-
-        res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_content("{\"sucesso\": true}", "application/json");
-    });
+    
     // rota para cadastar comentário
     servidor.Post("/api/avistamentos", [&](const Request& req, Response& res) {
         try {
