@@ -7,14 +7,41 @@
 #include <map>
 using namespace std;
 using namespace httplib;
-
+// código mais complexo da main, função que retira dados do .js e diferencia foto de str normal
 string extrairValorJson(const string& json, const string& chave) {
-    string busca = "\"" + chave + "\":\"";
-    size_t inicio = json.find(busca);
-    if (inicio == string::npos) return ""; // Retorna vazio se não achar a chave
-    inicio += busca.length();
-    size_t fim = json.find("\"", inicio);
-    return json.substr(inicio, fim - inicio);
+    string busca = "\"" + chave + "\"";
+    size_t posChave = json.find(busca);
+    if (posChave == string::npos) return "";
+    size_t posDoisPontos = json.find(":", posChave); // encontra os dois pontos após a chave
+    if (posDoisPontos == string::npos) return "";
+
+    size_t posAtual = posDoisPontos + 1; // pula os espaços em branco após os dois pontos
+    while (posAtual < json.length() && isspace(json[posAtual])) {
+        posAtual++;
+    }
+    if (posAtual >= json.length()) return "";
+    // verifica se o valor é uma string 
+    if (json[posAtual] == '"') {
+        size_t inicio = posAtual + 1; // pula a aspa de abertura
+        size_t fim = json.find('"', inicio); // procura a aspa de fechamento
+        
+        if (fim != string::npos) {
+            return json.substr(inicio, fim - inicio); // retorna tudo
+        }
+    } else {
+        // se for um número ou bool
+        size_t inicio = posAtual;
+        size_t fim = json.find_first_of(",}", inicio); // para na vírgula ou fim do json
+        
+        if (fim != string::npos) {
+            string valor = json.substr(inicio, fim - inicio);
+            // remove espaços extras no final
+            while (!valor.empty() && isspace(valor.back())) valor.pop_back();
+            return valor;
+        }
+    }
+    
+    return "";
 }
 // estrutura de um comentario de postagem
 struct Comentario {
@@ -155,17 +182,25 @@ int main() {
         string eh_castrado = extrairValorJson(corpo, "eh_castrado");
         string localizacao = extrairValorJson(corpo, "localizacao"); 
         string descricao = extrairValorJson(corpo, "descricao");     
+        string foto = extrairValorJson(corpo, "foto");
 
-        vector<string> parametros = {dono_id, tipo, nome, peso, idade, cor, raca, porte, usa_coleira, pelagem, eh_castrado, localizacao, descricao};
+        cout << "\n--- TENTATIVA DE CADASTRO ---" << endl;
+        cout << "Pet: " << nome << " | ID do Dono: [" << dono_id << "]" << endl;
+        cout << "Tamanho da Foto em texto: " << foto.length() << " caracteres." << endl;
+
+        vector<string> parametros = {dono_id, tipo, nome, peso, idade, cor, raca, porte, usa_coleira, pelagem, eh_castrado, localizacao, descricao, foto};
         
         bool sucesso = db.executarPreparado(
-            "INSERT INTO animais (dono_id, tipo, nome, peso, idade, cor, raca, porte, usa_coleira, pelagem, eh_castrado, localizacao, descricao) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+            "INSERT INTO animais (dono_id, tipo, nome, peso, idade, cor, raca, porte, usa_coleira, pelagem, eh_castrado, localizacao, descricao, foto) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             parametros
         );
 
         if (sucesso) res.set_content(R"({"sucesso": true})", "application/json");
-        else res.set_content(R"({"sucesso": false, "erro": "Erro ao salvar no banco"})", "application/json");
+        else {
+            cout << "FALHA DO SQLITE: " << db.getMensagemErro() << endl;
+            res.set_content(R"({"sucesso": false, "erro": "Erro ao salvar no banco"})", "application/json");
+        }
     });
 
     // rota para listar animais do feed
@@ -181,7 +216,7 @@ int main() {
             if (s->length() > 1) *s += ",";
             
             *s += string("{") 
-                + "\"nome\":\"" + (argv[0] ? argv[0] : "") + "\","
+                + "\"nome\":\"" + (argv[0] ? argv[0] : "") + "\"," // organização dos dados
                 + "\"tipo\":\"" + (argv[1] ? argv[1] : "") + "\","
                 + "\"raca\":\"" + (argv[2] ? argv[2] : "") + "\","
                 + "\"cor\":\"" + (argv[3] ? argv[3] : "") + "\","
@@ -193,17 +228,18 @@ int main() {
                 + "\"eh_castrado\":\"" + (argv[9] ? argv[9] : "0") + "\","
                 + "\"localizacao\":\"" + (argv[10] ? argv[10] : "") + "\","
                 + "\"descricao\":\"" + (argv[11] ? argv[11] : "") + "\","
-                + "\"dono_nome\":\"" + (argv[12] ? argv[12] : "") + "\","
-                + "\"dono_telefone\":\"" + (argv[13] ? argv[13] : "") + "\""
+                + "\"foto\":\"" + (argv[12] ? argv[12] : "") + "\","       
+                + "\"dono_nome\":\"" + (argv[13] ? argv[13] : "") + "\","   
+                + "\"dono_telefone\":\"" + (argv[14] ? argv[14] : "") + "\"" 
                 + "}";
             return 0;
         };
 
         string query = 
-            "SELECT a.nome, a.tipo, a.raca, a.cor, a.porte, a.pelagem, a.idade, a.peso, a.usa_coleira, a.eh_castrado, a.localizacao, a.descricao, "
+            "SELECT a.nome, a.tipo, a.raca, a.cor, a.porte, a.pelagem, a.idade, a.peso, a.usa_coleira, a.eh_castrado, a.localizacao, a.descricao, a.foto, "
             "p.nome AS dono_nome, p.telefone AS dono_telefone "
             "FROM animais a "
-            "JOIN pessoas p ON a.dono_id = p.id "
+            "LEFT JOIN pessoas p ON a.dono_id = p.id "
             "ORDER BY a.id DESC;";
         
         sqlite3_exec(db_ptr, query.c_str(), cb, &json, nullptr);

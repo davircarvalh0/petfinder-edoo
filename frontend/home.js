@@ -1,7 +1,31 @@
+let fotoBase64 = "";
+
 // Aguarda a página carregar completamente
 document.addEventListener("DOMContentLoaded", () => {
     carregarAnimais();
 
+    const fotoInput = document.getElementById("fotoAnimal");
+            if (fotoInput) {
+                fotoInput.addEventListener("change", function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        // limite de 2MB
+                        if (file.size > 2 * 1024 * 1024) {
+                            alert("A imagem é muito grande. Escolha uma foto com menos de 2MB.");
+                            this.value = ""; 
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            fotoBase64 = e.target.result;
+                            const preview = document.getElementById("previewFoto");
+                            preview.src = fotoBase64;
+                            preview.style.display = "block";
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
     // lógica para publicar nova ocorrência
     const formOcorrencia = document.getElementById("form-ocorrencia");
 
@@ -28,6 +52,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // monta os dados
+            let fotoParaEnviar = "";
+            const preview = document.getElementById("previewFoto");
+            if (preview && preview.src && preview.src.startsWith("data:image")) {
+                fotoParaEnviar = preview.src;
+            }
+
             const dadosPet = {
                 dono_id: donoId,
                 nome: document.getElementById("nome").value || "Desconhecido",
@@ -38,12 +68,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 pelagem: document.getElementById("pelagem").value || "Não informada",
                 peso: document.getElementById("peso").value || "0",
                 idade: document.getElementById("idade").value || "0",
-                // Checkbox: se estiver marcado envia "1", senão "0"
+                // se tiver marcado é 1, caso contrário, 0
                 usa_coleira: document.getElementById("usa_coleira").checked ? "1" : "0",
                 eh_castrado: document.getElementById("eh_castrado").checked ? "1" : "0",
                 localizacao: document.getElementById("localizacao").value,
-                descricao: document.getElementById("descricao").value
+                descricao: document.getElementById("descricao").value,
+                foto: fotoParaEnviar // agora pega a foto
             };
+
+            // MODO DETETIVE
+            console.log("DADOS QUE SERÃO ENVIADOS:", dadosPet);
+            if (!fotoParaEnviar) {
+                alert("Atenção: A foto se perdeu ou não foi selecionada! Tente selecionar novamente.");
+                return; // Bloqueia o envio
+            }
 
             try {
                 const resposta = await fetch('/api/animais', {
@@ -87,8 +125,13 @@ async function carregarAnimais() {
             const coleiraTexto = animal.usa_coleira === "1" ? "Sim" : "Não";
             const castradoTexto = animal.eh_castrado === "1" ? "Sim" : "Não";
 
+            const fotoHtml = animal.foto 
+                ? `<img src="${animal.foto}" alt="Foto do pet" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0; margin-bottom: 10px;">` 
+                : `<div style="width: 100%; height: 150px; background: #eee; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0; color: #888; margin-bottom: 10px;">Sem foto</div>`;
+            
             // Monta a estrutura HTML do Card
             card.innerHTML = `
+                ${fotoHtml}
                 <div class="pet-card-header">
                     <h3>🐾 ${animal.nome}</h3>
                     <span class="status-badge">Desaparecido</span>

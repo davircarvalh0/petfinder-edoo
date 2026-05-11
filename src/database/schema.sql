@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS animais (
     idade INTEGER,
     cor TEXT,
     raca TEXT,
-    foto TEXT DEFAULT '',
+    foto TEXT,
     porte TEXT,
     usa_coleira INTEGER CHECK (usa_coleira IN (0, 1)),
     pelagem TEXT,
