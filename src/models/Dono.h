@@ -1,6 +1,7 @@
 #pragma once
 #include "Pessoa.h"
 #include <string>
+using namespace std;
 
 class Animal;
 class Avistamento;
@@ -15,6 +16,8 @@ public:
 
     ~Dono() {}
 
+    string getEndereco() const { return endereco; }
+    void setEndereco(const std::string& end) { endereco = end; }
     void cadastrarAnimal(Animal* a);
     void listarAnimais();
     void exibirInfo() override;

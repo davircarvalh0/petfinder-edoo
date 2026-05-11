@@ -13,11 +13,12 @@ private:
     Localizacao* localizacao;
 public:
     Avistamento(int id, string data, string descricao, Usuario* usuario, Ocorrencia* ocorrencia, Localizacao* loc); //construtor completo
-    int getId(); //retorna o id de avistamento
-    string getData(); //retorna a data do reporte  
-    string getDescricao(); //retorna as observaçoes feitas pelo usuario
-    Usuario* getUsuario(); //retorna o ponteiro do usuario que reportou
-    Ocorrencia* getOcorrencia(); //rettorna o ponteiro da ocrrencia relacionada ao animal
-    Localizacao* getLocalizacao(); //retona a possivel localizaçao do pet 
-    void exibir(); //print
+    int getId() const; //retorna o id de avistamento
+    string getData() const; //retorna a data do reporte  
+    string getDescricao() const; //retorna as observaçoes feitas pelo usuario
+    Usuario* getUsuario() const; //retorna o ponteiro do usuario que reportou
+    Ocorrencia* getOcorrencia() const; //rettorna o ponteiro da ocrrencia relacionada ao animal
+    Localizacao* getLocalizacao() const; //retona a possivel localizaçao do pet 
+
+    void exibir() const; //print
 };

@@ -6,8 +6,8 @@ using namespace std;
 Localizacao::Localizacao(){ //contrutor padrao, mantem as variaveis iguais a 0 ou "nada"
     latitude = 0;
     longitude = 0;
-    bairro = "nada";
-    referencia = "nada";
+    bairro = "Não informado";
+    referencia = "Nenhuma";
 }   
 Localizacao::Localizacao(double lat, double longi, string b, string ref) { //construtor completo, recebe os valores das variaveis e atribui a elas
     latitude   = lat;
@@ -16,16 +16,16 @@ Localizacao::Localizacao(double lat, double longi, string b, string ref) { //con
     referencia = ref;
 }
 //get
-double Localizacao::getLatitude(){ //retornam os valorres dos atributos privados
+double Localizacao::getLatitude() const { //retornam os valorres dos atributos privados
     return latitude;
 }
-double Localizacao::getLongitude(){
+double Localizacao::getLongitude() const {
     return longitude;
 }
-string Localizacao::getBairro(){
+string Localizacao::getBairro() const {
     return bairro;
 }
-string Localizacao::getReferencia(){
+string Localizacao::getReferencia() const {
     return referencia;
 }
 //set
@@ -43,7 +43,7 @@ void Localizacao::setReferencia(string ref){
 }
 
 //print
-void Localizacao::exibir(){
+void Localizacao::exibir() const {
     cout << "Bairro: " << bairro     << endl;
     cout << "Referencia: " << referencia << endl;
     cout << "Latitude: " << latitude   << endl;

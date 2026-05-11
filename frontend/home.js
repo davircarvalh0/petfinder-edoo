@@ -1,7 +1,31 @@
+let fotoBase64 = "";
+
 // Aguarda a página carregar completamente
 document.addEventListener("DOMContentLoaded", () => {
     carregarAnimais();
 
+    const fotoInput = document.getElementById("fotoAnimal");
+            if (fotoInput) {
+                fotoInput.addEventListener("change", function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        // limite de 2MB
+                        if (file.size > 2 * 1024 * 1024) {
+                            alert("A imagem é muito grande. Escolha uma foto com menos de 2MB.");
+                            this.value = ""; 
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            fotoBase64 = e.target.result;
+                            const preview = document.getElementById("previewFoto");
+                            preview.src = fotoBase64;
+                            preview.style.display = "block";
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
     // lógica para publicar nova ocorrência
     const formOcorrencia = document.getElementById("form-ocorrencia");
 
@@ -28,6 +52,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // monta os dados
+            let fotoParaEnviar = "";
+            const preview = document.getElementById("previewFoto");
+            if (preview && preview.src && preview.src.startsWith("data:image")) {
+                fotoParaEnviar = preview.src;
+            }
+
             const dadosPet = {
                 dono_id: donoId,
                 nome: document.getElementById("nome").value || "Desconhecido",
@@ -38,12 +68,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 pelagem: document.getElementById("pelagem").value || "Não informada",
                 peso: document.getElementById("peso").value || "0",
                 idade: document.getElementById("idade").value || "0",
-                // Checkbox: se estiver marcado envia "1", senão "0"
+                // se tiver marcado é 1, caso contrário, 0
                 usa_coleira: document.getElementById("usa_coleira").checked ? "1" : "0",
                 eh_castrado: document.getElementById("eh_castrado").checked ? "1" : "0",
                 localizacao: document.getElementById("localizacao").value,
-                descricao: document.getElementById("descricao").value
+                descricao: document.getElementById("descricao").value,
+                foto: fotoParaEnviar // agora pega a foto
             };
+
+            // MODO DETETIVE
+            console.log("DADOS QUE SERÃO ENVIADOS:", dadosPet);
+            if (!fotoParaEnviar) {
+                alert("Atenção: A foto se perdeu ou não foi selecionada! Tente selecionar novamente.");
+                return; // Bloqueia o envio
+            }
 
             try {
                 const resposta = await fetch('/api/animais', {
@@ -81,14 +119,17 @@ async function carregarAnimais() {
 
         animais.forEach(animal => {
             const card = document.createElement('div');
-            // A classe 'pet-card' é o que vai puxar o design bonito do CSS!
             card.className = "pet-card"; 
 
             const coleiraTexto = animal.usa_coleira === "1" ? "Sim" : "Não";
             const castradoTexto = animal.eh_castrado === "1" ? "Sim" : "Não";
 
-            // Monta a estrutura HTML do Card
+            const fotoHtml = animal.foto 
+                ? `<img src="${animal.foto}" alt="Foto do pet" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0; margin-bottom: 10px;">` 
+                : `<div style="width: 100%; height: 150px; background: #eee; display: flex; align-items: center; justify-content: center; border-radius: 8px 8px 0 0; color: #888; margin-bottom: 10px;">Sem foto</div>`;
+            
             card.innerHTML = `
+                ${fotoHtml}
                 <div class="pet-card-header">
                     <h3>🐾 ${animal.nome}</h3>
                     <span class="status-badge">Desaparecido</span>
@@ -120,10 +161,108 @@ async function carregarAnimais() {
                     <p>👤 <strong>Dono:</strong> ${animal.dono_nome || "Desconhecido"}</p>
                     <p>📞 <strong>Contato:</strong> ${animal.dono_telefone || "Sem contato"}</p>
                 </div>
+                
+                <div class="comentarios-section">
+                    <h4 class="comentarios-titulo">👁️ Avistamentos / Pistas</h4>
+                    
+                    <div class="lista-comentarios" id="avistamentos-${animal.id}">
+                        <p style="color: #888; font-size: 0.9em; text-align: center;">Carregando avistamentos...</p>
+                    </div>
+                    
+                    <div class="novo-comentario">
+                        <input type="text" id="input-avistamento-${animal.id}" placeholder="Viu o ${animal.nome}? Deixe um relato...">
+                        <button onclick="window.enviarAvistamento('${animal.id}')">Enviar</button>
+                    </div>
+                </div>
             `;
             lista.appendChild(card);
+            
+            window.carregarAvistamentos(animal.id);
         });
     } catch (erro) {
         console.error("Erro ao carregar o feed:", erro);
     }
 }
+
+window.carregarAvistamentos = async function(animalId) {
+    const container = document.getElementById(`avistamentos-${animalId}`);
+    if (!container) return;
+
+    try {
+        // Vai buscar apenas os comentários que tenham o ID desta ocorrência
+        const response = await fetch(`/api/avistamentos?animal_id=${animalId}`);
+        if (!response.ok) {
+            container.innerHTML = `<p style="color: #888; font-size: 0.85em; text-align: center;">Seja o primeiro a reportar uma pista.</p>`;
+            return;
+        }
+
+        const avistamentos = await response.json();
+        
+        if (avistamentos.length === 0) {
+            container.innerHTML = `<p style="color: #888; font-size: 0.85em; text-align: center;">Nenhuma pista registrada ainda.</p>`;
+            return;
+        }
+
+        container.innerHTML = ''; // Limpa para renderizar
+        avistamentos.forEach(av => {
+            // Se você depois ajustar o backend para retornar o nome do usuário, pode trocar o "Anônimo"
+            container.innerHTML += `
+                <div class="comentario-item">
+                    <p class="comentario-texto"><strong>Relato:</strong> ${av.descricao}</p>
+                    <span class="comentario-data">${av.data}</span>
+                </div>
+            `;
+        });
+    } catch (erro) {
+        console.error(`Erro ao carregar avistamentos do pet ${animalId}:`, erro);
+        container.innerHTML = `<p style="color: #dc3545; font-size: 0.85em;">Erro ao carregar avistamentos.</p>`;
+    }
+};
+
+window.enviarAvistamento = async function(animalId) {
+    const input = document.getElementById(`input-avistamento-${animalId}`);
+    const descricao = input.value;
+    
+    if (!descricao.trim()) {
+        alert("O relato não pode estar vazio.");
+        return;
+    }
+
+    const usuarioId = localStorage.getItem("usuarioLogadoId");
+    if (!usuarioId) {
+        alert("Você precisa estar logado para reportar uma pista.");
+        return;
+    }
+
+    // Pega a data atual no formato brasileiro (DD/MM/YYYY)
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
+
+    const payload = {
+        animal_id: animalId.toString(),
+        usuario_id: usuarioId.toString(),
+        descricao: descricao,
+        data: dataAtual
+    };
+
+    console.log("Enviando avistamento:", payload);
+
+    try {
+        const response = await fetch('/api/avistamentos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const resultado = await response.json();
+
+        if (resultado.sucesso) {
+            input.value = ''; 
+            window.carregarAvistamentos(animalId); 
+        } else {
+            alert("Erro ao enviar: " + (resultado.erro || "Falha no servidor."));
+        }
+    } catch (erro) {
+        console.error("Erro ao enviar avistamento:", erro);
+        alert("Erro de conexão. O servidor backend está rodando?");
+    }
+};
