@@ -68,6 +68,16 @@ O PetFinder Recife é uma plataforma onde donos de animais podem registrar ocorr
 
 ---
 
+## 🧠 Conceitos de Orientação a Objetos Aplicados
+
+- **Classes:** Modelos estáticos que definem características e comportamentos. Ex: A classe `Animal` define atributos básicos como `nome` e `idade` que servem de molde estrutural.
+- **Objetos:** Instâncias reais criadas a partir das classes durante a execução. Ex: Quando um usuário cadastra o pet "Thor", um objeto da classe `Cachorro` ganha vida na memória.
+- **Herança:** Reaproveitamento de código onde classes filhas recebem atributos de classes mães. Ex: `Cachorro` e `Gato` herdam de `Animal`; `Dono` e `Usuario` herdam de `Pessoa`.
+- **Modificadores de Acesso:** Controle de segurança dos dados (`private`, `public`, `protected`). Ex: Os dados de `Animal` são `private` e só são alterados de forma segura pelos métodos `public` (getters/setters).
+- **Polimorfismo:** Capacidade de tratar diferentes objetos de forma unificada. Ex: O backend usa um ponteiro genérico `Animal* pet` que pode receber e manipular tanto `new Gato()` quanto `new Cachorro()`.
+
+---
+
 ## 🛠️ Tecnologias
 
 - **Backend:** C++17 com servidor HTTP (`httplib`)
