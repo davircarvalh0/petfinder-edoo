@@ -1,15 +1,3 @@
-# pethealth-edoo
-Projeto da disciplina de Estrutura de Dados Orientadas a Objetos
-
-# Sobre o projeto
-O **PetFinder Recife** é um sistema de informação que conecta donos de animais perdidos com usuários que possam ter avistado o pet. O sistema permite o cadastro de animais, donos, ocorrências de desaparecimento e avistamentos, além de exibir pontos de resgate próximos na cidade.
-
-Desenvolvido como projeto acadêmico da disciplina de **Estruturas de Dados / POO em C++**, com foco em:
-
-- Programação Orientada a Objetos (classes, herança, polimorfismo, encapsulamento)
-- CRUD completo conectado a banco de dados
-- Interface com o usuário via interface gráfica
-- Documentação técnica e Diagrama de Classes UML
 
 # 🗂️ Estrutura de Pastas
 
@@ -49,98 +37,82 @@ petfinder-recife/
 ├── Makefile
 └── README.md
 ```
-## Como rodar o codigo
-# WIndows:
-**O Compilador:** MinGW-w64
+# 🐾 PetFinder Recife
 
-**O que baixar:** MSYS2
+Sistema web para reportar e localizar animais domésticos desaparecidos na cidade do Recife.
 
-**Após instalar o MSYS2, ele deve abrir o terminal do MSYS2 (UCRT64) e rodar:**
-pacman -S mingw-w64-ucrt-x86_64-gcc
+---
 
-**Precisa adicionar a pasta bin do MinGW (geralmente C:\msys64\ucrt64\bin) ao PATH das Variáveis de Ambiente do Windows para que o comando g++ funcione no terminal do VS Code.**
+## 📋 Descrição
 
-**Instalação do sqlite:**
-pacman -S mingw-w64-ucrt-x86_64-sqlite3
+O PetFinder Recife é uma plataforma onde donos de animais podem registrar ocorrências de pets desaparecidos e outros usuários podem reportar avistamentos, ajudando a reunir o animal com seu dono.
 
-**ferramenta de automação:**
-pacman -S make
+---
 
-**dentro do Vscode:**
-*crie um novo terminal (control + ') e rode* mingw32-make
-*depois rode* mingw32-make run
+## ✅ O que o sistema faz
 
-**localhost**
-apos isso, no seu terminal, vai aparecer o link do site web local, agora é so copiar e colar e ultilizar a ferramenta!
-```
-# Banco de dados SQLite
+- Cadastro e login de usuários
+- Publicar ocorrência de pet perdido com foto, descrição e localização
+- Feed de ocorrências com todos os pets desaparecidos
+- Filtrar ocorrências por **nome do pet** ou **nome do dono**
+- Reportar avistamentos/pistas em cada ocorrência
+- Dono pode **marcar o pet como encontrado**
+- Dono pode **remover a ocorrência** do feed
 
-O projeto usa SQLite, entao o banco fica em um arquivo local chamado `petfinder.db`.
-As tabelas sao criadas pelo arquivo `src/database/schema.sql` quando o programa inicia.
+---
 
-## Como compilar e rodar
+## 🛠️ Tecnologias
 
-```bash
-make
-make run
-```
+- **Backend:** C++17 com servidor HTTP (`httplib`)
+- **Banco de dados:** SQLite3
+- **Frontend:** HTML, CSS e JavaScript puro
 
-Se quiser recriar o banco do zero:
+---
 
-```bash
-make db-reset
-```
+## 🚀 Como rodar
 
-Para abrir o banco pelo terminal:
+### Windows (MSYS2)
+
+1. Baixe e instale o **MSYS2** em [msys2.org](https://www.msys2.org)
+2. Abra o terminal **MSYS2 MINGW64** pelo menu iniciar
+3. Instale as dependências (apenas uma vez):
 
 ```bash
-sqlite3 petfinder.db
-.tables
-.schema animais
+pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-make mingw-w64-x86_64-sqlite3
 ```
 
-## Como conectar no C++
+4. Entre na pasta do projeto e compile:
 
-```cpp
-#include "database/Database.h"
-
-Database banco;
-
-if (!banco.abrir("petfinder.db")) {
-    return 1;
-}
-
-banco.criarTabelas("src/database/schema.sql");
+```bash
+cd /c/Users/SEU_NOME/caminho/petfinder-edoo-main
+mingw32-make
+mingw32-make run
 ```
 
-## Exemplo para os CRUDs
+Após rodar, acesse no navegador: **http://localhost:8080**
 
-Use `executarPreparado` para `INSERT`, `UPDATE` e `DELETE`:
+Para encerrar o servidor: `Ctrl + C`
 
-```cpp
-banco.executarPreparado(
-    "INSERT INTO animais (dono_id, tipo, nome, peso, idade, cor, raca, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
-    {"1", "cachorro", "Rex", "12.5", "3", "caramelo", "vira-lata", "uploads/rex.jpg"}
-);
+### Outros comandos
+
+```bash
+make clean      # remove o executavel compilado
+make db-reset   # apaga e recria o banco do zero
+make db-schema  # cria as tabelas sem apagar dados
 ```
 
-Use `consultar` para `SELECT`:
+---
 
-```cpp
-banco.consultar(
-    "SELECT id, nome, telefone FROM pessoas WHERE tipo = ?;",
-    {"dono"},
-    [](const Database::Linha& linha) {
-        std::cout << linha.at("id") << " - " << linha.at("nome") << std::endl;
-    }
-);
-```
+## 🔗 Links
 
-Principais tabelas:
+| Item | Link |
+|------|------|
+| 📁 Código fonte | _em breve_ |
+| 📄 Relatório | _em breve_ |
+| 🎥 Vídeo no YouTube | _em breve_ |
 
-- `pessoas`: guarda `dono` e `usuario`
-- `animais`: cachorro/gato ligado a um dono, incluindo o campo `foto`
-- `localizacoes`: latitude, longitude, bairro e referencia
-- `ocorrencias`: desaparecimento de um animal
-- `avistamentos`: relato de um usuario sobre uma ocorrencia
-- `pontos_resgate`: locais uteis para resgate
+---
+
+## 👥 Equipe
+
+Projeto desenvolvido para a disciplina de Estrutura de Dados e Orientação a Objetos (CIN-UFPE 2026.1)

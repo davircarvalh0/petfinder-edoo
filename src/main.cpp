@@ -282,7 +282,156 @@ int main() {
             res.set_content("[]", "application/json");
         }
     });
-
+        // lista so os animais do dono logado (aba "Minhas Ocorrencias")
+    servidor.Get("/api/animais/meus", [&](const Request& req, Response& res) {
+        if (!req.has_param("dono_id")) {
+            res.status = 400;
+            res.set_content("[]", "application/json");
+            return;
+        }
+        string donoId = req.get_param_value("dono_id");
+        string json = "[";
+        bool primeiro = true;
+    
+        db.consultar(
+            "SELECT a.id, a.nome, a.tipo, a.raca, a.cor, a.porte, a.pelagem, "
+            "a.idade, a.peso, a.usa_coleira, a.eh_castrado, a.localizacao, a.descricao, "
+            "a.foto, o.status "
+            "FROM animais a "
+            "LEFT JOIN ocorrencias o ON o.animal_id = a.id "
+            "WHERE a.dono_id = ? "
+            "ORDER BY a.id DESC",
+            {donoId},
+            [&](const Database::Linha& l) {
+                if (!primeiro) json += ",";
+                primeiro = false;
+                json += "{"
+                    "\"id\":\""         + l.at("id")          + "\","
+                    "\"nome\":\""       + l.at("nome")        + "\","
+                    "\"tipo\":\""       + l.at("tipo")        + "\","
+                    "\"raca\":\""       + l.at("raca")        + "\","
+                    "\"cor\":\""        + l.at("cor")         + "\","
+                    "\"porte\":\""      + l.at("porte")       + "\","
+                    "\"pelagem\":\""    + l.at("pelagem")     + "\","
+                    "\"idade\":\""      + l.at("idade")       + "\","
+                    "\"peso\":\""       + l.at("peso")        + "\","
+                    "\"usa_coleira\":\"" + l.at("usa_coleira") + "\","
+                    "\"eh_castrado\":\"" + l.at("eh_castrado") + "\","
+                    "\"localizacao\":\"" + l.at("localizacao") + "\","
+                    "\"descricao\":\""  + l.at("descricao")  + "\","
+                    "\"status\":\""     + l.at("status")     + "\""
+                    "}";
+            }
+        );
+        json += "]";
+        res.set_content(json, "application/json");
+    });
+    
+    //edita as informacoes de um animal pelo id
+    servidor.Put("/api/animais/:id", [&](const Request& req, Response& res) {
+        string id           = req.path_params.at("id");
+        string nome         = extrairValorJson(req.body, "nome");
+        string raca         = extrairValorJson(req.body, "raca");
+        string cor          = extrairValorJson(req.body, "cor");
+        string porte        = extrairValorJson(req.body, "porte");
+        string pelagem      = extrairValorJson(req.body, "pelagem");
+        string peso         = extrairValorJson(req.body, "peso");
+        string idade        = extrairValorJson(req.body, "idade");
+        string localizacao  = extrairValorJson(req.body, "localizacao");
+        string descricao    = extrairValorJson(req.body, "descricao");
+    
+        bool sucesso = db.executarPreparado(
+            "UPDATE animais SET nome=?, raca=?, cor=?, porte=?, pelagem=?, "
+            "peso=?, idade=?, localizacao=?, descricao=? WHERE id=?",
+            {nome, raca, cor, porte, pelagem, peso, idade, localizacao, descricao, id}
+        );
+    
+        if (sucesso)
+            res.set_content(R"({"sucesso": true})", "application/json");
+        else
+            res.set_content(R"({"sucesso": false, "erro": "Falha ao atualizar"})", "application/json");
+    });
+    
+    //marca um animal como encontrado
+    servidor.Put("/api/animais/:id/encontrado", [&](const Request& req, Response& res) {
+        string id = req.path_params.at("id");
+        bool sucesso = db.executarPreparado(
+            "UPDATE ocorrencias SET status='ENCONTRADO' WHERE animal_id=?",
+            {id}
+        );
+        if (sucesso)
+            res.set_content(R"({"sucesso": true})", "application/json");
+        else
+            res.set_content(R"({"sucesso": false})", "application/json");
+    });
+    
+    // remove um animal e suas ocorrencias (cascade no schema ja cuida)
+    servidor.Delete("/api/animais/:id", [&](const Request& req, Response& res) {
+        string id = req.path_params.at("id");
+        bool sucesso = db.executarPreparado("DELETE FROM animais WHERE id=?", {id});
+        if (sucesso)
+            res.set_content(R"({"sucesso": true})", "application/json");
+        else
+            res.set_content(R"({"sucesso": false})", "application/json");
+    });
+    
+    //retorna os dados do perfil do usuario logado
+    servidor.Get("/api/perfil", [&](const Request& req, Response& res) {
+        if (!req.has_param("id")) {
+            res.status = 400;
+            res.set_content("{}", "application/json");
+            return;
+        }
+        string id = req.get_param_value("id");
+        string json = "{}";
+    
+        db.consultar(
+            "SELECT nome, email, telefone, cpf FROM pessoas WHERE id=?",
+            {id},
+            [&](const Database::Linha& l) {
+                json = "{"
+                    "\"nome\":\""     + l.at("nome")     + "\","
+                    "\"email\":\""    + l.at("email")    + "\","
+                    "\"telefone\":\"" + l.at("telefone") + "\","
+                    "\"cpf\":\""      + l.at("cpf")      + "\""
+                    "}";
+            }
+        );
+        res.set_content(json, "application/json");
+    });
+    
+    //atualiza email, telefone e/ou senha do usuario
+    servidor.Put("/api/perfil", [&](const Request& req, Response& res) {
+        string id       = extrairValorJson(req.body, "id");
+        string email    = extrairValorJson(req.body, "email");
+        string telefone = extrairValorJson(req.body, "telefone");
+        string senha    = extrairValorJson(req.body, "senha");
+    
+        if (id.empty()) {
+            res.set_content(R"({"sucesso": false, "erro": "ID ausente"})", "application/json");
+            return;
+        }
+    
+        // monta o UPDATE dinamicamente com apenas os campos enviados
+        string sql = "UPDATE pessoas SET ";
+        vector<string> params;
+        bool algum = false;
+    
+        if (!email.empty())    { if (algum) sql += ", "; sql += "email=?";    params.push_back(email);    algum = true; }
+        if (!telefone.empty()) { if (algum) sql += ", "; sql += "telefone=?"; params.push_back(telefone); algum = true; }
+        if (!senha.empty())    { if (algum) sql += ", "; sql += "senha=?";    params.push_back(senha);    algum = true; }
+        if (!algum) {
+            res.set_content(R"({"sucesso": false, "erro": "Nenhum campo para atualizar"})", "application/json");
+            return;
+        }
+        sql += " WHERE id=?";
+        params.push_back(id);
+        bool sucesso = db.executarPreparado(sql, params);
+        if (sucesso)
+            res.set_content(R"({"sucesso": true})", "application/json");
+        else
+            res.set_content(R"({"sucesso": false, "erro": "Falha ao atualizar perfil"})", "application/json");
+        });
     cout << "Servidor PetFinder rodando em http://localhost:8080..." << endl;
     cout << "Pressione Ctrl+C para encerrar." << endl;
     servidor.listen("localhost", 8080); // inicia o servidor
