@@ -4,11 +4,11 @@
 
 using namespace std;
 
-CRUDUsuario::CRUDUsuario(Database& database) : db(database) {}
+CRUDUsuario::CRUDUsuario(Database& database) : db(database) {}  //"&" significa que usamos o mesmo banco, sem copiar
 
 bool CRUDUsuario::cadastrar(const string& nome, const string& cpf, const string& telefone, const string& email, const string& dataCadastro) {
     bool sucesso = db.executarPreparado(
-        "INSERT INTO pessoas (tipo, nome, cpf, telefone, email, data_cadastro) VALUES ('usuario', ?, ?, ?, ?, ?)", 
+        "INSERT INTO pessoas (tipo, nome, cpf, telefone, email, data_cadastro) VALUES ('usuario', ?, ?, ?, ?, ?)",  //"?" sao placeholders substituidos com seguranca pelo banco 
         {nome, cpf, telefone, email, dataCadastro}
     );
     
@@ -21,9 +21,9 @@ bool CRUDUsuario::cadastrar(const string& nome, const string& cpf, const string&
 bool CRUDUsuario::buscarPorId(int id) {
     int contador = 0;
     db.consultar(
-        "SELECT id, nome, cpf, telefone, email, data_cadastro FROM pessoas WHERE id = ? AND tipo = 'usuario'", 
+        "SELECT id, nome, cpf, telefone, email, data_cadastro FROM pessoas WHERE id = ? AND tipo = 'usuario'",      //and tipo garante que nao pega Dono com mesmo id 
         {to_string(id)}, 
-        [&](const Database::Linha& linha) {
+        [&](const Database::Linha& linha) {     //callback chamado uma vez por linha retornada
             contador++;
             cout << "ID: " << linha.at("id") << endl;
             cout << "Nome: " << linha.at("nome") << endl;
@@ -41,7 +41,7 @@ bool CRUDUsuario::buscarPorId(int id) {
 bool CRUDUsuario::listarTodos() {
     int contador = 0;
     db.consultar(
-        "SELECT id, nome, cpf, telefone, email, data_cadastro FROM pessoas WHERE tipo = 'usuario' ORDER BY nome", 
+        "SELECT id, nome, cpf, telefone, email, data_cadastro FROM pessoas WHERE tipo = 'usuario' ORDER BY nome",   //order by nome organiza em ordem alfabetica 
         {}, 
         [&](const Database::Linha& linha) {
             contador++;
@@ -55,7 +55,7 @@ bool CRUDUsuario::listarTodos() {
 
 bool CRUDUsuario::atualizar(int id, const string& novoTelefone, const string& novoEmail) {
     bool sucesso = db.executarPreparado(
-        "UPDATE pessoas SET telefone = ?, email = ?, atualizado_em = datetime('now', 'localtime') WHERE id = ? AND tipo = 'usuario'", 
+        "UPDATE pessoas SET telefone = ?, email = ?, atualizado_em = datetime('now', 'localtime') WHERE id = ? AND tipo = 'usuario'", //where garante que so o usuario com esse id seja alterado
         {novoTelefone, novoEmail, to_string(id)}
     );
     
@@ -67,7 +67,7 @@ bool CRUDUsuario::atualizar(int id, const string& novoTelefone, const string& no
 
 bool CRUDUsuario::deletar(int id) {
     bool sucesso = db.executarPreparado(
-        "DELETE FROM pessoas WHERE id = ? AND tipo = 'usuario'", 
+        "DELETE FROM pessoas WHERE id = ? AND tipo = 'usuario'",
         {to_string(id)}
     );
     
