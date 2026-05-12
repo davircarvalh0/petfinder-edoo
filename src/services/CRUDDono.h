@@ -16,5 +16,7 @@ class CRUDDono {
     bool listarTodos(); //R: lista todos os donos cadastrados
     bool atualizar(int id, const std::string& novoTelefone,const std::string& novoEndereco); //U: atualiza telefone e endereco do dono pelo id
     bool deletar(int id); //D: remove um dono do banco pelo id
+    string buscarPerfil(int id); //R: busca dados do perfil do usuario para exibir na tela
+    bool atualizarPerfil(int id, const string& email, const string& telefone, const string& senha); //U: atualiza dados sensiveis (so altera o que nao for vazio)
 };
 #endif

@@ -18,5 +18,9 @@ public:
     bool listarPorDono(int donoId);//R: lista todos os animais de um dono especifico
     bool atualizar(int id, const string& novaFoto, float novoPeso); //U: atualiza a foto e o peso do animal
     bool deletar(int id); //D: remove um animal do banco
+    string listarPorDonoId(const string& donoId); //R: lista animais vinculados a um dono (feed do dono)
+    //U: atualiza os dados textuais de um animal/ocorrencia
+    bool atualizarInfo(int id, const string& nome, const string& raca,const string& cor, const string& porte,const string& pelagem, const string& peso,const string& idade, const string& localizacao,const string& descricao);
+    bool marcarEncontrado(int id); //U: altera o status para 'encontrado' na tabela de ocorrencias
 };
 #endif
