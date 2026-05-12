@@ -6,18 +6,19 @@ Sistema web para reportar e localizar animais domésticos desaparecidos na cidad
 
 ## 📑 Sumário
 
-- [Estrutura de Pastas](#-estrutura-de-pastas)
-- [Descrição](#-descrição)
-- [O que o sistema faz](#-o-que-o-sistema-faz)
-- [Tecnologias](#-tecnologias)
-- [Como rodar](#-como-rodar)
-- [Recursos de POO](#-recursos-de-programação-orientada-a-objetos)
-- [Screenshots](#-screenshots)
-- [Links](#-links)
-- [Equipe](#-equipe)
+- [Estrutura de Pastas](#estrutura-de-pastas)
+- [Descrição](#descricao)
+- [O que o sistema faz](#o-que-o-sistema-faz)
+- [Tecnologias](#tecnologias)
+- [Como rodar](#como-rodar)
+- [Recursos de POO](#recursos-de-poo)
+- [Screenshots](#screenshots)
+- [Links](#links)
+- [Equipe](#equipe)
 
 ---
 
+<a id="estrutura-de-pastas"></a>
 ## 🗂️ Estrutura de Pastas
 
 ```
@@ -59,8 +60,7 @@ petfinder-recife/
 │   │   ├── feed.png
 │   │   ├── publicar.png
 │   │   ├── minhas-ocorrencias.png
-│   │   ├── perfil.png
-│   │   └── perfil-destaque.png
+│   │   └── perfil.png
 │   ├── diagrama_classes_uml.png
 │   ├── relatorio_tecnico.pdf
 │   └── documentacao_sprint.md
@@ -73,12 +73,14 @@ petfinder-recife/
 
 ---
 
+<a id="descricao"></a>
 ## 📋 Descrição
 
 O PetFinder Recife é uma plataforma onde donos de animais podem registrar ocorrências de pets desaparecidos e outros usuários podem reportar avistamentos, ajudando a reunir o animal com seu dono.
 
 ---
 
+<a id="o-que-o-sistema-faz"></a>
 ## ✅ O que o sistema faz
 
 - Cadastro e login de usuários
@@ -91,6 +93,7 @@ O PetFinder Recife é uma plataforma onde donos de animais podem registrar ocorr
 
 ---
 
+<a id="tecnologias"></a>
 ## 🛠️ Tecnologias
 
 - **Backend:** C++17 com servidor HTTP (`httplib`)
@@ -99,6 +102,7 @@ O PetFinder Recife é uma plataforma onde donos de animais podem registrar ocorr
 
 ---
 
+<a id="como-rodar"></a>
 ## 🚀 Como rodar
 
 ### Windows (MSYS2)
@@ -133,7 +137,8 @@ make db-schema  # cria as tabelas sem apagar dados
 
 ---
 
-## Recursos de Programação Orientada a Objetos
+<a id="recursos-de-poo"></a>
+## 🧠 Recursos de Programação Orientada a Objetos
 
 ### Classes e Objetos
 
@@ -308,7 +313,8 @@ O `CRUDAnimal` não precisa saber se é cachorro ou gato — trata os dois pelo 
 
 ---
 
-## Screenshots
+<a id="screenshots"></a>
+## 📸 Screenshots
 
 ### Login
 ![Login](docs/screenshots/login.png)
@@ -327,6 +333,7 @@ O `CRUDAnimal` não precisa saber se é cachorro ou gato — trata os dois pelo 
 
 ---
 
+<a id="links"></a>
 ## 🔗 Links
 
 | Item | Link |
@@ -337,6 +344,7 @@ O `CRUDAnimal` não precisa saber se é cachorro ou gato — trata os dois pelo 
 
 ---
 
+<a id="equipe"></a>
 ## 👥 Equipe
 
 - Gabriel Godoy <ggcm@cin.ufpe.br>
