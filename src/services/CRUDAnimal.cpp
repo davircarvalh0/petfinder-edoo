@@ -157,3 +157,39 @@ bool CRUDAnimal::deletar(int id) {
     else cout << "Erro ao remover animal: " << db->getMensagemErro() << endl;
     return sucesso;
 }
+//read que lista so os animais do dono logado com o status da ocorrencia
+string CRUDAnimal::listarPorDonoId(const string& donoId) {
+    string json = "[";
+    string sql = "SELECT a.*, p.nome AS dono_nome, p.telefone AS dono_telefone, o.status "
+                 "FROM animais a "
+                 "LEFT JOIN pessoas p ON CAST(a.dono_id AS INTEGER) = p.id "
+                 "LEFT JOIN ocorrencias o ON o.animal_id = a.id "
+                 "WHERE a.dono_id = ? "
+                 "ORDER BY a.id DESC";
+
+    db->consultar(sql, {donoId}, [&](const Database::Linha& linha) {
+        if (json.length() > 1) json += ",";
+        auto get = [&](const string& col) -> string {
+            return (linha.find(col) != linha.end()) ? linha.at(col) : "";
+        };
+        json += "{""\"id\":\"" + get("id") + "\",""\"nome\":\"" + get("nome") + "\","
+            "\"tipo\":\"" + get("tipo")  + "\",""\"raca\":\""+ get("raca") + "\",""\"cor\":\""+ get("cor") + "\",""\"porte\":\""+ get("porte") + "\","
+            "\"pelagem\":\"" + get("pelagem") + "\",""\"idade\":\"" + get("idade") + "\",""\"peso\":\"" + get("peso") + "\",""\"usa_coleira\":\"" + get("usa_coleira") + "\","
+            "\"eh_castrado\":\"" + get("eh_castrado") + "\",""\"localizacao\":\"" + get("localizacao") + "\",""\"descricao\":\"" + get("descricao") + "\",""\"status\":\"" + get("status") + "\"""}";});
+    json += "]";
+    return json;
+}
+//update
+bool CRUDAnimal::atualizarInfo(int id, const string& nome, const string& raca,
+const string& cor, const string& porte,
+const string& pelagem, const string& peso,
+const string& idade, const string& localizacao,
+const string& descricao) {
+    return db->executarPreparado(
+        "UPDATE animais SET nome=?, raca=?, cor=?, porte=?, pelagem=?, peso=?, idade=?, localizacao=?, descricao=? WHERE id=?",
+        {nome, raca, cor, porte, pelagem, peso, idade, localizacao, descricao, to_string(id)});
+}
+//update
+bool CRUDAnimal::marcarEncontrado(int id) {
+    return db->executarPreparado("UPDATE ocorrencias SET status='encontrado' WHERE animal_id=?", {to_string(id)});
+}

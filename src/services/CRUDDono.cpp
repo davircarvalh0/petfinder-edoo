@@ -42,11 +42,11 @@ bool CRUDDono::buscarPorId(int id) {
         [&](const Database::Linha& linha) {
             encontrou = true;
             cout << "=== Dono Encontrado ===" << endl;
-            cout << "ID: "       << linha.at("id") << endl;
-            cout << "Nome: "     << linha.at("nome") << endl;
-            cout << "CPF: "      << linha.at("cpf") << endl;
+            cout << "ID: "  << linha.at("id") << endl;
+            cout << "Nome: " << linha.at("nome") << endl;
+            cout << "CPF: " << linha.at("cpf") << endl;
             cout << "Telefone: " << linha.at("telefone") << endl;
-            cout << "Email: "    << linha.at("email") << endl;
+            cout << "Email: "  << linha.at("email") << endl;
             cout << "Endereço: " << linha.at("endereco") << endl;
         }
     );
@@ -87,4 +87,25 @@ bool CRUDDono::deletar(int id) {
     if (sucesso) cout << "Dono removido com sucesso!" << endl;
     else cout << "Erro ao remover dono: " << db->getMensagemErro() << endl;
     return sucesso;
+}
+//read do fltro
+string CRUDDono::buscarPerfil(int id) {
+    string json = "{}";
+    db->consultar("SELECT nome, email, telefone, cpf FROM pessoas WHERE id=?", {to_string(id)},
+        [&](const Database::Linha& linha) {
+            json =  "{""\"nome\":\"" + linha.at("nome") + "\",""\"email\":\"" + linha.at("email")+ "\",""\"telefone\":\"" + linha.at("telefone") + "\",""\"cpf\":\""+ linha.at("cpf")+ "\"""}";});
+    return json;
+}
+//update do perfil
+bool CRUDDono::atualizarPerfil(int id, const string& email, const string& telefone, const string& senha) {
+    string sql = "UPDATE pessoas SET ";
+    vector<string> params;
+    bool algum = false;
+    if (!email.empty()) { if (algum) sql += ", "; sql += "email=?"; params.push_back(email); algum = true; }
+    if (!telefone.empty()) { if (algum) sql += ", "; sql += "telefone=?"; params.push_back(telefone); algum = true; }
+    if (!senha.empty()) { if (algum) sql += ", "; sql += "senha=?"; params.push_back(senha); algum = true; }
+    if (!algum) return false;
+    sql += " WHERE id=?";
+    params.push_back(to_string(id));
+    return db->executarPreparado(sql, params);
 }
