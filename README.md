@@ -143,7 +143,7 @@ make db-schema  # cria as tabelas sem apagar dados
 
 ---
 
-## 🧠 Recursos de Programação Orientada a Objetos
+## Recursos de Programação Orientada a Objetos
 
 ### Classes e Objetos
 
@@ -318,7 +318,7 @@ O `CRUDAnimal` não precisa saber se é cachorro ou gato — trata os dois pelo 
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 ### Login
 ![Login](docs/screenshots/login.png)
