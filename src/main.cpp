@@ -209,6 +209,15 @@ int main() {
 
         res.set_content(crudAnimal.listarFeed(), "application/json");
     });
+    //lista os animais do dono logado (aba "Minhas Ocorrencias")
+    servidor.Get("/api/animais/meus", [&](const Request& req, Response& res) {
+        if (!req.has_param("dono_id")) {
+            res.status = 400;
+            res.set_content("[]", "application/json");
+            return;
+        }
+        res.set_content(crudAnimal.listarPorDonoId(req.get_param_value("dono_id")), "application/json");
+    });
 
     // rota de ocorrências
     servidor.Post("/api/ocorrencias", [&](const Request& req, Response& res) {
@@ -234,7 +243,7 @@ int main() {
 
     servidor.Put("/api/ocorrencias/encontrado", [&](const Request& req, Response& res) {
         int id = stoi(extrairValorJson(req.body, "id"));
-        if (crudOcorrencia.AtualizarOcorrencia(id, "encontrado")) {
+        if (crudOcorrencia.AtualizarOcorrencia(id, "ENCONTRADO")) {
             res.set_content(R"({"sucesso": true})", "application/json");
         } else {
             res.set_content(R"({"sucesso": false})", "application/json");
@@ -282,84 +291,74 @@ int main() {
             res.set_content("[]", "application/json");
         }
     });
-//lista os animais do dono logado (aba "Minhas Ocorrencias")
-servidor.Get("/api/animais/meus", [&](const Request& req, Response& res) {
-    if (!req.has_param("dono_id")) {
-        res.status = 400;
-        res.set_content("[]", "application/json");
-        return;
-    }
-    res.set_content(crudAnimal.listarPorDonoId(req.get_param_value("dono_id")), "application/json");
-});
+    //edita as informacoes de uma ocorrencia
+    servidor.Put("/api/animais/:id", [&](const Request& req, Response& res) {
+        int id = stoi(req.path_params.at("id"));
 
-//edita as informacoes de uma ocorrencia
-servidor.Put("/api/animais/:id", [&](const Request& req, Response& res) {
-    int id = stoi(req.path_params.at("id"));
+        if (crudAnimal.atualizarInfo(
+            id,
+            extrairValorJson(req.body, "nome"),
+            extrairValorJson(req.body, "raca"),
+            extrairValorJson(req.body, "cor"),
+            extrairValorJson(req.body, "porte"),
+            extrairValorJson(req.body, "pelagem"),
+            extrairValorJson(req.body, "peso"),
+            extrairValorJson(req.body, "idade"),
+            extrairValorJson(req.body, "localizacao"),
+            extrairValorJson(req.body, "descricao")
+        )) {
+            res.set_content(R"({"sucesso": true})", "application/json");
+        } else {
+            res.set_content(R"({"sucesso": false, "erro": "Falha ao atualizar"})", "application/json");
+        }
+    });
 
-    if (crudAnimal.atualizarInfo(
-        id,
-        extrairValorJson(req.body, "nome"),
-        extrairValorJson(req.body, "raca"),
-        extrairValorJson(req.body, "cor"),
-        extrairValorJson(req.body, "porte"),
-        extrairValorJson(req.body, "pelagem"),
-        extrairValorJson(req.body, "peso"),
-        extrairValorJson(req.body, "idade"),
-        extrairValorJson(req.body, "localizacao"),
-        extrairValorJson(req.body, "descricao")
-    )) {
-        res.set_content(R"({"sucesso": true})", "application/json");
-    } else {
-        res.set_content(R"({"sucesso": false, "erro": "Falha ao atualizar"})", "application/json");
-    }
-});
+    //marca o animal como encontrado
+    servidor.Put("/api/animais/:id/encontrado", [&](const Request& req, Response& res) {
+        int id = stoi(req.path_params.at("id"));
+        if (crudAnimal.marcarEncontrado(id)) {
+            res.set_content(R"({"sucesso": true})", "application/json");
+        } else {
+            res.set_content(R"({"sucesso": false})", "application/json");
+        }
+    });
 
-//marca o animal como encontrado
-servidor.Put("/api/animais/:id/encontrado", [&](const Request& req, Response& res) {
-    int id = stoi(req.path_params.at("id"));
-    if (crudAnimal.marcarEncontrado(id)) {
-        res.set_content(R"({"sucesso": true})", "application/json");
-    } else {
-        res.set_content(R"({"sucesso": false})", "application/json");
-    }
-});
+    //remove o animal (cascade no schema remove ocorrencias junto)
+    servidor.Delete("/api/animais/:id", [&](const Request& req, Response& res) {
+        int id = stoi(req.path_params.at("id"));
+        if (crudAnimal.deletar(id)) {
+            res.set_content(R"({"sucesso": true})", "application/json");
+        } else {
+            res.set_content(R"({"sucesso": false})", "application/json");
+        }
+    });
 
-//remove o animal (cascade no schema remove ocorrencias junto)
-servidor.Delete("/api/animais/:id", [&](const Request& req, Response& res) {
-    int id = stoi(req.path_params.at("id"));
-    if (crudAnimal.deletar(id)) {
-        res.set_content(R"({"sucesso": true})", "application/json");
-    } else {
-        res.set_content(R"({"sucesso": false})", "application/json");
-    }
-});
+    //retorna os dados do perfil do usuario logado
+    servidor.Get("/api/perfil", [&](const Request& req, Response& res) {
+        if (!req.has_param("id")) {
+            res.status = 400;
+            res.set_content("{}", "application/json");
+            return;
+        }
+        res.set_content(crudDono.buscarPerfil(stoi(req.get_param_value("id"))), "application/json");
+    });
 
-//retorna os dados do perfil do usuario logado
-servidor.Get("/api/perfil", [&](const Request& req, Response& res) {
-    if (!req.has_param("id")) {
-        res.status = 400;
-        res.set_content("{}", "application/json");
-        return;
-    }
-    res.set_content(crudDono.buscarPerfil(stoi(req.get_param_value("id"))), "application/json");
-});
-
-//atualiza email, telefone e/ou senha do perfil
-servidor.Put("/api/perfil", [&](const Request& req, Response& res) {
-    string idStr = extrairValorJson(req.body, "id");
-    if (idStr.empty()) {
-        res.set_content(R"({"sucesso": false, "erro": "ID ausente"})", "application/json");
-        return;
-    } if (crudDono.atualizarPerfil(
-        stoi(idStr),
-        extrairValorJson(req.body, "email"),
-        extrairValorJson(req.body, "telefone"),
-        extrairValorJson(req.body, "senha")
-    )) {
-        res.set_content(R"({"sucesso": true})", "application/json");
-    } else {
-        res.set_content(R"({"sucesso": false, "erro": "Nenhum campo para atualizar"})", "application/json");
-    }});
+    //atualiza email, telefone e/ou senha do perfil
+    servidor.Put("/api/perfil", [&](const Request& req, Response& res) {
+        string idStr = extrairValorJson(req.body, "id");
+        if (idStr.empty()) {
+            res.set_content(R"({"sucesso": false, "erro": "ID ausente"})", "application/json");
+            return;
+        } if (crudDono.atualizarPerfil(
+            stoi(idStr),
+            extrairValorJson(req.body, "email"),
+            extrairValorJson(req.body, "telefone"),
+            extrairValorJson(req.body, "senha")
+        )) {
+            res.set_content(R"({"sucesso": true})", "application/json");
+        } else {
+            res.set_content(R"({"sucesso": false, "erro": "Nenhum campo para atualizar"})", "application/json");
+        }});
     cout << "Servidor PetFinder rodando em http://localhost:8080..." << endl;
     cout << "Pressione Ctrl+C para encerrar." << endl;
     servidor.listen("localhost", 8080); // inicia o servidor

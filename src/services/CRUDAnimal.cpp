@@ -58,13 +58,10 @@ string CRUDAnimal::listarFeed() {
     try {
         db->consultar(sql, {}, [&](const Database::Linha& linha) {
             if (json.length() > 1) json += ",";
-            
             json += "{";
-
             auto pegarDado = [&](string coluna) {
                 return (linha.find(coluna) != linha.end()) ? linha.at(coluna) : "ERRO_COLUNA_FALTANDO";
             };
-
             json += "\"id\":\"" + pegarDado("id") + "\",";
             json += "\"nome\":\"" + pegarDado("nome") + "\",";
             json += "\"tipo\":\"" + pegarDado("tipo") + "\",";
@@ -86,7 +83,6 @@ string CRUDAnimal::listarFeed() {
     } catch (const std::exception& e) {
         std::cout << "CRITICAL ERROR no listarFeed: " << e.what() << std::endl;
     }
-
     json += "]";
     return json;
 }
@@ -191,5 +187,5 @@ const string& descricao) {
 }
 //update
 bool CRUDAnimal::marcarEncontrado(int id) {
-    return db->executarPreparado("UPDATE ocorrencias SET status='encontrado' WHERE animal_id=?", {to_string(id)});
+    return db->executarPreparado("UPDATE ocorrencias SET status='ENCONTRADO' WHERE animal_id=?", {to_string(id)});
 }
