@@ -268,12 +268,36 @@ body.home-page {
 }
 
 .status-badge {
-    background: #dc3545;
     color: white;
     padding: 5px 12px;
     border-radius: 20px;
     font-size: 0.85rem;
     font-weight: bold;
+}
+
+.status-badge.encontrado {
+    background: #198754;
+}
+
+.status-badge.desaparecido {
+    background: #dc3545;
+}
+
+.btn-encontrado {
+    width: auto;
+    padding: 10px 16px;
+    background-color: #198754;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    margin: 16px 20px 0 20px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-encontrado:hover {
+    background-color: #157347;
 }
 
 .pet-card-body {

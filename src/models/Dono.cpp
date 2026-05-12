@@ -9,6 +9,7 @@ Dono::Dono(string n, string c, string t, string e, string end)
 
 
 void Dono::cadastrarAnimal(Animal* a) {
+    (void)a;
     cout << "Animal cadastrado!" << endl;
 }
 

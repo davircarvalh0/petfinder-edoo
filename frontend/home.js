@@ -107,6 +107,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function carregarAnimais() {
+    const usuarioLogadoId = localStorage.getItem('usuarioLogadoId');
+    const saudacao = document.getElementById('saudacaoUsuario');
+    if (saudacao) {
+        saudacao.textContent = usuarioLogadoId ? `Olá, Dono #${usuarioLogadoId}` : 'Olá, Visitante';
+    }
+
     try {
         const response = await fetch('/api/animais');
         const animais = await response.json();
@@ -117,11 +123,15 @@ async function carregarAnimais() {
         lista.innerHTML = ''; // limpa a lista antes de carregar
 
         animais.forEach(animal => {
-            const card = document.createElement('div');
-            card.className = "pet-card"; 
-
+            const status = animal.status ? animal.status.toUpperCase() : 'PERDIDO';
             const coleiraTexto = animal.usa_coleira === "1" ? "Sim" : "Não";
             const castradoTexto = animal.eh_castrado === "1" ? "Sim" : "Não";
+            const statusBadgeClass = status === 'ENCONTRADO' ? 'status-badge encontrado' : 'status-badge desaparecido';
+            const statusLabel = status === 'ENCONTRADO' ? 'Encontrado' : 'Desaparecido';
+            const podeMarcarEncontrado = usuarioLogadoId === animal.dono_id && status === 'PERDIDO' && animal.ocorrencia_id;
+
+            const card = document.createElement('div');
+            card.className = "pet-card"; 
 
             const fotoHtml = animal.foto 
                 ? `<img src="${animal.foto}" alt="Foto do pet" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0; margin-bottom: 10px;">` 
@@ -131,7 +141,7 @@ async function carregarAnimais() {
                 ${fotoHtml}
                 <div class="pet-card-header">
                     <h3>🐾 ${animal.nome}</h3>
-                    <span class="status-badge">Desaparecido</span>
+                    <span class="${statusBadgeClass}">${statusLabel}</span>
                 </div>
                 
                 <div class="pet-card-body">
@@ -160,6 +170,8 @@ async function carregarAnimais() {
                     <p>👤 <strong>Dono:</strong> ${animal.dono_nome || "Desconhecido"}</p>
                     <p>📞 <strong>Contato:</strong> ${animal.dono_telefone || "Sem contato"}</p>
                 </div>
+
+                ${podeMarcarEncontrado ? `<div class="pet-card-actions"><button class="btn-encontrado" onclick="marcarAnimalEncontrado('${animal.ocorrencia_id}')">Marcar como encontrado</button></div>` : ''}
                 
                 <div class="comentarios-section">
                     <h4 class="comentarios-titulo">👁️ Avistamentos / Pistas</h4>
@@ -182,6 +194,32 @@ async function carregarAnimais() {
         console.error("Erro ao carregar o feed:", erro);
     }
 }
+
+window.marcarAnimalEncontrado = async function(ocorrenciaId) {
+    if (!ocorrenciaId) {
+        alert('Não foi possível identificar a ocorrência do animal.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/ocorrencias/encontrado', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: ocorrenciaId })
+        });
+
+        const resultado = await response.json();
+        if (resultado.sucesso) {
+            alert('Status atualizado: animal marcado como encontrado.');
+            carregarAnimais();
+        } else {
+            alert('Falha ao atualizar o status do animal.');
+        }
+    } catch (erro) {
+        console.error('Erro ao marcar como encontrado:', erro);
+        alert('Erro de conexão ao marcar o animal como encontrado.');
+    }
+};
 
 window.carregarAvistamentos = async function(animalId) {
     const container = document.getElementById(`avistamentos-${animalId}`);

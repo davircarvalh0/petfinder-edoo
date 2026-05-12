@@ -1,4 +1,4 @@
-#include "Pessoa.h"
+#include "pessoa.h"
 
 string Pessoa::getNome() const { return nome; }
 string Pessoa::getCpf() const { return cpf; }
