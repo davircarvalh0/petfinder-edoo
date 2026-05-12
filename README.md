@@ -22,11 +22,18 @@ petfinder-recife/
 │   │   ├── CRUDAnimal.h / CRUDAnimal.cpp
 │   │   ├── CRUDDono.h / CRUDDono.cpp
 │   │   ├── CRUDOcorrencia.h / CRUDOcorrencia.cpp
-│   │   └── CRUDAvisamento.h / CRUDAvistamento.cpp
+│   │   ├── CRUDAvistamento.h / CRUDAvistamento.cpp
+│   │   └── CRUDLocalizacao.h / CRUDLocalizacao.cpp
 │   ├── ui/
 │   │   ├── Menu.h / Menu.cpp
 │   │   └── Relatorios.h / Relatorios.cpp
 │   └── main.cpp
+├── frontend/
+│   ├── index.html
+│   ├── home.html
+│   ├── script.js
+│   ├── home.js
+│   └── style.css
 ├── docs/
 │   ├── diagrama_classes_uml.png
 │   ├── relatorio_tecnico.pdf
