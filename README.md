@@ -122,4 +122,10 @@ make db-schema  # cria as tabelas sem apagar dados
 
 ## 👥 Equipe
 
+- Gabriel Godoy <ggcm@cin.ufpe.br>
+- Davi Rosendo <drc4@cin.ufpe.br>
+- João Felipe Costa <jfcn4@cin.ufpe.br>
+- Davi Pedrosa <dmmp@cin.ufpe.br>
+- João Antonio Lins <jalca@cin.ufpe.br>
+  
 Projeto desenvolvido para a disciplina de Estrutura de Dados e Orientação a Objetos (CIN-UFPE 2026.1)
