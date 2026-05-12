@@ -51,16 +51,16 @@ bool CRUDAnimal::cadastrar(Animal* pet, const string& donoId, const string& tipo
 string CRUDAnimal::listarFeed() {
     string json = "[";
     
-    // 1. GARANTA que o id está aqui no SELECT!
-    string sql = "SELECT id, nome, tipo, raca, cor, porte, pelagem, idade, peso, usa_coleira, eh_castrado, localizacao, descricao, foto FROM animais";
+    string sql = "SELECT a.*, p.nome AS dono_nome, p.telefone AS dono_telefone "
+                 "FROM animais a "
+                 "LEFT JOIN pessoas p ON CAST(a.dono_id AS INTEGER) = p.id";
 
     try {
         db->consultar(sql, {}, [&](const Database::Linha& linha) {
             if (json.length() > 1) json += ",";
             
             json += "{";
-            // Usamos um pequeno truque para evitar o erro 500:
-            // Verificamos se a coluna existe antes de dar o .at()
+
             auto pegarDado = [&](string coluna) {
                 return (linha.find(coluna) != linha.end()) ? linha.at(coluna) : "ERRO_COLUNA_FALTANDO";
             };
@@ -78,7 +78,9 @@ string CRUDAnimal::listarFeed() {
             json += "\"eh_castrado\":\"" + pegarDado("eh_castrado") + "\",";
             json += "\"localizacao\":\"" + pegarDado("localizacao") + "\",";
             json += "\"descricao\":\"" + pegarDado("descricao") + "\",";
-            json += "\"foto\":\"" + pegarDado("foto") + "\"";
+            json += "\"foto\":\"" + pegarDado("foto") + "\",";
+            json += "\"dono_nome\":\"" + pegarDado("dono_nome") + "\",";
+            json += "\"dono_telefone\":\"" + pegarDado("dono_telefone") + "\"";
             json += "}";
         });
     } catch (const std::exception& e) {

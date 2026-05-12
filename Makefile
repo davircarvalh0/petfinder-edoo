@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -I./src
+CXXFLAGS = -std=c++17 -Wall -Wextra -I./src -D_WIN32_WINNT=0x0A00
 LDFLAGS = -lsqlite3 -lws2_32
 
 TARGET = petfinder

@@ -152,10 +152,10 @@ int main() {
         string sIdade = extrairValorJson(corpo, "idade");
         int idade = sIdade.empty() ? 0 : stoi(sIdade);
 
-        string sColeira = extrairValorJson(corpo, "usaColeira");
+        string sColeira = extrairValorJson(corpo, "usa_coleira");
         bool usaColeira = (sColeira == "1" || sColeira == "true");
 
-        string sCastrado = extrairValorJson(corpo, "ehCastrado");
+        string sCastrado = extrairValorJson(corpo, "eh_castrado");
         bool ehCastrado = (sCastrado == "1" || sCastrado == "true");
 
         // 2. Instanciação Polimórfica passando os dados para os construtores
