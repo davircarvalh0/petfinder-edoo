@@ -49,7 +49,30 @@ petfinder-recife/
 ├── Makefile
 └── README.md
 ```
+## Como rodar o codigo
+# WIndows:
+**O Compilador:** MinGW-w64
 
+**O que baixar:** MSYS2
+
+**Após instalar o MSYS2, ele deve abrir o terminal do MSYS2 (UCRT64) e rodar:**
+pacman -S mingw-w64-ucrt-x86_64-gcc
+
+**Precisa adicionar a pasta bin do MinGW (geralmente C:\msys64\ucrt64\bin) ao PATH das Variáveis de Ambiente do Windows para que o comando g++ funcione no terminal do VS Code.**
+
+**Instalação do sqlite:**
+pacman -S mingw-w64-ucrt-x86_64-sqlite3
+
+**ferramenta de automação:**
+pacman -S make
+
+**dentro do Vscode:**
+*crie um novo terminal (control + ') e rode* mingw32-make
+*depois rode* mingw32-make run
+
+**localhost**
+apos isso, no seu terminal, vai aparecer o link do site web local, agora é so copiar e colar e ultilizar a ferramenta!
+```
 # Banco de dados SQLite
 
 O projeto usa SQLite, entao o banco fica em um arquivo local chamado `petfinder.db`.
