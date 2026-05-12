@@ -1,5 +1,24 @@
+# 🐾 PetFinder Recife
 
-# 🗂️ Estrutura de Pastas
+Sistema web para reportar e localizar animais domésticos desaparecidos na cidade do Recife.
+
+---
+
+## 📑 Sumário
+
+- [Estrutura de Pastas](#-estrutura-de-pastas)
+- [Descrição](#-descrição)
+- [O que o sistema faz](#-o-que-o-sistema-faz)
+- [Tecnologias](#-tecnologias)
+- [Como rodar](#-como-rodar)
+- [Recursos de POO](#-recursos-de-programação-orientada-a-objetos)
+- [Screenshots](#-screenshots)
+- [Links](#-links)
+- [Equipe](#-equipe)
+
+---
+
+## 🗂️ Estrutura de Pastas
 
 ```
 petfinder-recife/
@@ -35,6 +54,13 @@ petfinder-recife/
 │   ├── home.js
 │   └── style.css
 ├── docs/
+│   ├── screenshots/
+│   │   ├── login.png
+│   │   ├── feed.png
+│   │   ├── publicar.png
+│   │   ├── minhas-ocorrencias.png
+│   │   ├── perfil.png
+│   │   └── perfil-destaque.png
 │   ├── diagrama_classes_uml.png
 │   ├── relatorio_tecnico.pdf
 │   └── documentacao_sprint.md
@@ -44,9 +70,6 @@ petfinder-recife/
 ├── Makefile
 └── README.md
 ```
-# 🐾 PetFinder Recife
-
-Sistema web para reportar e localizar animais domésticos desaparecidos na cidade do Recife.
 
 ---
 
@@ -110,6 +133,200 @@ make db-schema  # cria as tabelas sem apagar dados
 
 ---
 
+## 🧠 Recursos de Programação Orientada a Objetos
+
+### Classes e Objetos
+
+Uma **classe** é o molde que define atributos e comportamentos. Um **objeto** é uma instância criada a partir desse molde.
+
+```cpp
+// classe — define o molde de um animal
+class Animal {
+private:
+    string nome;
+    float peso;
+public:
+    Animal(string nome, float peso);
+    string getNome();
+};
+
+// objeto — instancia criada a partir da classe
+Animal* pet = new Cachorro("Rex", 5.5, ...);
+```
+
+No projeto, cada pet cadastrado no feed é um objeto `Cachorro` ou `Gato` criado na rota `POST /api/animais` da `main.cpp`.
+
+---
+
+### Encapsulamento
+
+Encapsulamento é proteger os dados da classe, permitindo acesso apenas por métodos controlados (getters e setters).
+
+```cpp
+class Animal {
+private:
+    string nome;  // atributo privado — ninguem acessa diretamente
+    float peso;
+
+public:
+    string getNome() { return nome; }   // getter — leitura controlada
+    void setPeso(float p) { peso = p; } // setter — escrita controlada
+};
+
+// uso correto
+pet->getNome();   // ok
+pet->nome;        // erro de compilacao — atributo privado
+```
+
+---
+
+### Modificadores de Acesso
+
+O C++ tem três níveis de acesso:
+
+```cpp
+class Pessoa {
+private:
+    string senha;      // so a propria classe acessa
+
+protected:
+    string nome;       // a classe e suas subclasses acessam
+    string cpf;
+
+public:
+    string getNome();  // qualquer um acessa
+};
+```
+
+No projeto, `Pessoa` usa `protected` para `nome` e `cpf` — assim `Dono` e `Usuario` herdam e acessam esses atributos diretamente sem precisar de getters intermediários.
+
+---
+
+### Herança
+
+Herança permite que uma classe filha reutilize e estenda o comportamento de uma classe pai.
+
+```cpp
+// classe pai
+class Pessoa {
+protected:
+    string nome;
+    string email;
+public:
+    virtual void exibirInfo() = 0;
+};
+
+// classe filha — herda tudo de Pessoa e adiciona o que e exclusivo
+class Dono : public Pessoa {
+private:
+    string endereco; // exclusivo do Dono
+public:
+    void exibirInfo() override;
+    void notificarAvistamento(Avistamento* av);
+};
+
+// outra classe filha — mesmo pai, comportamento diferente
+class Usuario : public Pessoa {
+private:
+    string dataCadastro; // exclusivo do Usuario
+public:
+    void exibirInfo() override;
+    void reportarAvistamento(Avistamento* av);
+};
+```
+
+A hierarquia do projeto:
+
+```
+Pessoa
+├── Dono    (tem endereco, cadastra e gerencia animais)
+└── Usuario (tem dataCadastro, reporta avistamentos)
+
+Animal
+├── Cachorro (tem porte, usaColeira)
+└── Gato     (tem pelagem, ehCastrado)
+```
+
+---
+
+### Classes Abstratas
+
+Uma classe abstrata não pode ser instanciada diretamente — ela serve como contrato que obriga as subclasses a implementar certos métodos.
+
+```cpp
+// Animal e abstrata — nao da para criar Animal diretamente
+class Animal {
+public:
+    virtual void exibir() const = 0; // metodo puro — obriga subclasse a implementar
+    virtual ~Animal() {}
+};
+
+// correto — Cachorro implementa o metodo obrigatorio
+Animal* pet = new Cachorro("Rex", ...);
+
+// erro de compilacao — Animal e abstrata
+Animal* pet = new Animal("Rex", ...);
+```
+
+No projeto, `Animal` e `Pessoa` são abstratas. Isso garante que nunca seja criado um "animal genérico" — sempre um `Cachorro` ou `Gato` específico.
+
+---
+
+### Polimorfismo
+
+Polimorfismo permite que um ponteiro do tipo pai chame o método correto da classe filha automaticamente em tempo de execução.
+
+```cpp
+// o ponteiro e do tipo Animal*, mas aponta para um Cachorro
+Animal* pet = new Cachorro("Rex", "Labrador", ...);
+
+// chama Cachorro::exibir() automaticamente — nao precisa saber o tipo
+pet->exibir();
+
+// mesmo ponteiro pode apontar para um Gato
+pet = new Gato("Mimi", "Persa", ...);
+
+// agora chama Gato::exibir() automaticamente
+pet->exibir();
+```
+
+Na `main.cpp` isso é usado na criação do pet:
+
+```cpp
+Animal* pet = nullptr;
+if (tipo == "gato") {
+    pet = new Gato(nome, cor, peso, ...);    // polimorfismo
+} else {
+    pet = new Cachorro(nome, cor, peso, ...); // polimorfismo
+}
+
+// independente do tipo, crudAnimal.cadastrar recebe um Animal*
+crudAnimal.cadastrar(pet, dono_id, tipo);
+```
+
+O `CRUDAnimal` não precisa saber se é cachorro ou gato — trata os dois pelo ponteiro `Animal*`.
+
+---
+
+## 📸 Screenshots
+
+### Login
+![Login](docs/screenshots/login.png)
+
+### Feed de Ocorrências
+![Feed](docs/screenshots/feed.png)
+
+### Publicar Pet Perdido
+![Publicar](docs/screenshots/publicar.png)
+
+### Minhas Ocorrências
+![Minhas Ocorrências](docs/screenshots/minhas-ocorrencias.png)
+
+### Meu Perfil
+![Perfil](docs/screenshots/perfil.png)
+
+---
+
 ## 🔗 Links
 
 | Item | Link |
@@ -127,5 +344,5 @@ make db-schema  # cria as tabelas sem apagar dados
 - João Felipe Costa <jfcn4@cin.ufpe.br>
 - Davi Pedrosa <dmmp@cin.ufpe.br>
 - João Antonio Lins <jalca@cin.ufpe.br>
-  
+
 Projeto desenvolvido para a disciplina de Estrutura de Dados e Orientação a Objetos (CIN-UFPE 2026.1)
