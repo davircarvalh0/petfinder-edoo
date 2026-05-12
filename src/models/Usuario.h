@@ -1,5 +1,5 @@
 #pragma once
-#include "Pessoa.h"
+#include "pessoa.h"
 #include <string>
 using namespace std;
 

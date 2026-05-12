@@ -215,7 +215,7 @@ int main() {
         int animalId = stoi(extrairValorJson(req.body, "animal_id"));
         int localId = stoi(extrairValorJson(req.body, "localizacao_id"));
         string data = extrairValorJson(req.body, "data");
-        string status = "perdido"; // status inicial
+        string status = "PERDIDO"; // status inicial
 
         // criamos o objeto ocorrência
         Ocorrencia novaOcorrencia(0, data, status, nullptr, nullptr);
@@ -234,7 +234,7 @@ int main() {
 
     servidor.Put("/api/ocorrencias/encontrado", [&](const Request& req, Response& res) {
         int id = stoi(extrairValorJson(req.body, "id"));
-        if (crudOcorrencia.AtualizarOcorrencia(id, "encontrado")) {
+        if (crudOcorrencia.AtualizarOcorrencia(id, "ENCONTRADO")) {
             res.set_content(R"({"sucesso": true})", "application/json");
         } else {
             res.set_content(R"({"sucesso": false})", "application/json");

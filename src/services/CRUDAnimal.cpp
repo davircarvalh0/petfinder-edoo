@@ -51,9 +51,11 @@ bool CRUDAnimal::cadastrar(Animal* pet, const string& donoId, const string& tipo
 string CRUDAnimal::listarFeed() {
     string json = "[";
     
-    string sql = "SELECT a.*, p.nome AS dono_nome, p.telefone AS dono_telefone "
+    string sql = "SELECT a.*, p.nome AS dono_nome, p.telefone AS dono_telefone, "
+                 "o.id AS ocorrencia_id, o.status "
                  "FROM animais a "
-                 "LEFT JOIN pessoas p ON CAST(a.dono_id AS INTEGER) = p.id";
+                 "LEFT JOIN pessoas p ON CAST(a.dono_id AS INTEGER) = p.id "
+                 "LEFT JOIN ocorrencias o ON o.id = (SELECT MAX(id) FROM ocorrencias WHERE animal_id = a.id)";
 
     try {
         db->consultar(sql, {}, [&](const Database::Linha& linha) {
@@ -62,7 +64,7 @@ string CRUDAnimal::listarFeed() {
             json += "{";
 
             auto pegarDado = [&](string coluna) {
-                return (linha.find(coluna) != linha.end()) ? linha.at(coluna) : "ERRO_COLUNA_FALTANDO";
+                return (linha.find(coluna) != linha.end()) ? linha.at(coluna) : "";
             };
 
             json += "\"id\":\"" + pegarDado("id") + "\",";
@@ -80,7 +82,10 @@ string CRUDAnimal::listarFeed() {
             json += "\"descricao\":\"" + pegarDado("descricao") + "\",";
             json += "\"foto\":\"" + pegarDado("foto") + "\",";
             json += "\"dono_nome\":\"" + pegarDado("dono_nome") + "\",";
-            json += "\"dono_telefone\":\"" + pegarDado("dono_telefone") + "\"";
+            json += "\"dono_telefone\":\"" + pegarDado("dono_telefone") + "\",";
+            json += "\"dono_id\":\"" + pegarDado("dono_id") + "\",";
+            json += "\"ocorrencia_id\":\"" + pegarDado("ocorrencia_id") + "\",";
+            json += "\"status\":\"" + pegarDado("status") + "\"";
             json += "}";
         });
     } catch (const std::exception& e) {

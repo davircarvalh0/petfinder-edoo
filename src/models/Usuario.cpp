@@ -6,6 +6,7 @@ Usuario::Usuario(string n, string c, string t, string e, string data)
     : Pessoa(n, c, t, e), dataCadastro(data) {}
 
 void Usuario::reportarAvistamento(Avistamento* av) {
+    (void)av;
     std::cout << "Avistamento registrado!" << std::endl;
 }
 
