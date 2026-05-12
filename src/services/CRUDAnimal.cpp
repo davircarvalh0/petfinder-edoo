@@ -50,11 +50,11 @@ bool CRUDAnimal::cadastrar(Animal* pet, const string& donoId, const string& tipo
 // método para a api
 string CRUDAnimal::listarFeed() {
     string json = "[";
-    
-    string sql = "SELECT a.*, p.nome AS dono_nome, p.telefone AS dono_telefone "
+    string sql = "SELECT a.*, p.nome AS dono_nome, p.telefone AS dono_telefone, "
+                 "o.status "
                  "FROM animais a "
-                 "LEFT JOIN pessoas p ON CAST(a.dono_id AS INTEGER) = p.id";
-
+                 "LEFT JOIN pessoas p ON CAST(a.dono_id AS INTEGER) = p.id "
+                 "LEFT JOIN ocorrencias o ON o.animal_id = a.id";
     try {
         db->consultar(sql, {}, [&](const Database::Linha& linha) {
             if (json.length() > 1) json += ",";
