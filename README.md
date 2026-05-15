@@ -338,8 +338,7 @@ O `CRUDAnimal` não precisa saber se é cachorro ou gato — trata os dois pelo 
 
 | Item | Link |
 |------|------|
-| 📁 Código fonte | _em breve_ |
-| 📄 Relatório | _em breve_ |
+| 📄 Relatório | https://docs.google.com/document/d/1VwX5ofNbjtOzzGhpuue7LXBqGyys31T4ps2Xtrb9pik/edit?usp=sharing |
 | 🎥 Vídeo no YouTube | _em breve_ |
 
 ---
