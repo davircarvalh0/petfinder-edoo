@@ -339,7 +339,8 @@ O `CRUDAnimal` não precisa saber se é cachorro ou gato — trata os dois pelo 
 | Item | Link |
 |------|------|
 | 📄 Relatório | https://docs.google.com/document/d/1VwX5ofNbjtOzzGhpuue7LXBqGyys31T4ps2Xtrb9pik/edit?usp=sharing |
-| 🎥 Vídeo no YouTube | _em breve_ |
+| 🎥 Vídeo no YouTube | https://www.youtube.com/watch?v=8shw4VffJTE |
+| 📃 Pagina do Github.io | https://davircarvalh0.github.io/petfinder-edoo/ |
 
 ---
 
